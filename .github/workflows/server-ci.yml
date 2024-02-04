@@ -1,0 +1,37 @@
+name: 🌻 해바라기 서버 CI 자동화 (Github Actions)
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+defaults:
+  run:
+    working-directory: server
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ✔️ 리포지토리 가져오기
+        uses: actions/checkout@v3
+
+      - name: ✔️ JDK 17 설치
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: ✔️ Gradle 명령 실행 권한 설정
+        run: chmod +x gradlew
+
+      - name: ✔️ Gradle build
+        run: ./gradlew build
+
+      - name: ✔️ 테스트 결과 코멘트 등록
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: '**/build/test-results/test/TEST-*.xml'
