@@ -10,7 +10,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 public class HealthCheckApiController {
 
     @RequestMapping(method = GET, path = "/health")
-    public ResponseEntity<String> healthCheck() {
-        return ResponseEntity.ok("OK");
+    public ResponseEntity<Void> healthCheck() {
+        return ResponseEntity.ok().build();
     }
 }
