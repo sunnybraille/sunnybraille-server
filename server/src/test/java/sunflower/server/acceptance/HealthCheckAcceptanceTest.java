@@ -5,11 +5,12 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import sunflower.server.acceptance.common.AcceptanceTest;
 
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class HealthCheckAcceptanceTest {
+public class HealthCheckAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 서버_헬스_체크() {
