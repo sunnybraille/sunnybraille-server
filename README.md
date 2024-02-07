@@ -38,6 +38,8 @@ Location: translations/{id}
 
 None
 
+---
+
 ### 점자 파일 요청 API
 
 #### Request
@@ -62,4 +64,4 @@ HTTP/1.1 200 OK
 
 ##### Body
 
-brf 파일 (구체적인 내용은 추후에 업데이트 예정)
+- brf 파일 (구체적인 내용은 추후에 업데이트 예정)
