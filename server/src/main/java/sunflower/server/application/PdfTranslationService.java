@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Service
 @Profile("!test")
@@ -42,7 +42,7 @@ public class PdfTranslationService {
         String requestURI = "https://api.mathpix.com/v3/pdf";
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MULTIPART_FORM_DATA);
+        headers.setContentType(APPLICATION_JSON);
         headers.set("app_id", appId);
         headers.set("app_key", appKey);
 
