@@ -23,10 +23,15 @@ public class PdfTranslateApiController {
             throw new FileEmptyException(1, "빈 파일입니다.");
         }
 
-        final Long location = pdfTranslationService.translate(file);
-        return ResponseEntity
-                .created(URI.create("/translations/" + location))
-                .build();
+        try {
+            final Long location = pdfTranslationService.translate(file);
+            return ResponseEntity
+                    .created(URI.create("/translations/" + location))
+                    .build();
+        } catch (Exception e) {
+            System.out.println(e);
+            throw e;
+        }
     }
 }
 

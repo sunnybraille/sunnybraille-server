@@ -1,12 +1,12 @@
 package sunflower.server.application;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,11 +15,13 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 
+@Slf4j
 @Service
 @Profile("!test")
 public class PdfTranslationService {
@@ -39,30 +41,45 @@ public class PdfTranslationService {
     }
 
     public Long translate(final MultipartFile file) {
+        log.info(file.getOriginalFilename());
+        log.info("변환을 시작합니다.");
+
         String requestURI = "https://api.mathpix.com/v3/pdf";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(APPLICATION_JSON);
-        headers.set("app_id", appId);
-        headers.set("app_key", appKey);
+        HttpHeaders requestHeader = new HttpHeaders();
+        requestHeader.setContentType(MULTIPART_FORM_DATA);
+        requestHeader.set("app_id", appId);
+        requestHeader.set("app_key", appKey);
 
-        MultiValueMap<String, Object> bodyMap = new LinkedMultiValueMap<>();
-        bodyMap.add("file", new FileSystemResource((file).getOriginalFilename()));
+        MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
+        requestBody.add("file", file.getResource());
 
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("conversion_formats", Map.of("docx", true, "tex.zip", true));
-        requestBody.put("math_inline_delimiters", new String[]{"\\(", "\\)"});
-        requestBody.put("rm_spaces", true);
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> bodyMap = new HashMap<>();
+        bodyMap.put("conversion_formats", Map.of("docx", true, "tex.zip", true));
+        bodyMap.put("math_inline_delimiters", Arrays.asList("$", "$"));
+        bodyMap.put("rm_spaces", true);
+        String optionsJson = null;
 
-        bodyMap.add("options_json", new Gson().toJson(requestBody));
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(bodyMap, headers);
-        ResponseEntity<String> response = restTemplate.exchange(requestURI, HttpMethod.POST, requestEntity, String.class);
+        try {
+            optionsJson = objectMapper.writeValueAsString(bodyMap);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        requestBody.add("options_json", optionsJson);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
+
+        log.info("Request URI: {}", requestURI);
+        log.info("Request Headers: {}", requestHeader);
+        log.info("Request Parameters: {}", requestBody);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(requestURI, requestEntity, String.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
             String responseBody = response.getBody();
-            System.out.println(responseBody);
-        } else {
-            System.err.println("Error occurred: " + response.getStatusCodeValue() + " - " + response.getBody());
+            log.info("Response Body: " + responseBody);
         }
 
         return null;
