@@ -1,6 +1,7 @@
 package sunflower.server.application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,8 +79,13 @@ public class PdfTranslationService {
         ResponseEntity<String> response = restTemplate.postForEntity(requestURI, requestEntity, String.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
-            String responseBody = response.getBody();
-            log.info("Response Body: " + responseBody);
+            try {
+                JsonNode root = objectMapper.readTree(response.getBody());
+                final String pdfID = root.get("pdf_id").asText();
+                log.info("PDF ID: " + pdfID);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return null;
