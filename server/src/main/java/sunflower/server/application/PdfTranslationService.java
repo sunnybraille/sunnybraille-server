@@ -30,32 +30,67 @@ public class PdfTranslationService {
     private final String appId;
     private final String appKey;
     private final RestTemplate restTemplate;
+    private final String appURI;
 
     public PdfTranslationService(
+            @Value("${mathpix.app-uri}") String appURI,
             @Value("${mathpix.app-id}") String appId,
             @Value("${mathpix.app-key}") String appKey,
             RestTemplate restTemplate
     ) {
+        this.appURI = appURI;
         this.appId = appId;
         this.appKey = appKey;
         this.restTemplate = restTemplate;
     }
 
     public Long translate(final MultipartFile file) {
-        log.info(file.getOriginalFilename());
-        log.info("변환을 시작합니다.");
+        log.info("File: {}, Mathpix API 호출을 시작합니다.", file.getOriginalFilename());
 
-        String requestURI = "https://api.mathpix.com/v3/pdf";
+        final ObjectMapper objectMapper = new ObjectMapper();
 
+        final HttpHeaders requestHeader = createRequestHeader();
+        final MultiValueMap<String, Object> requestBody = createRequestBody(file, objectMapper);
+        final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
+
+        log.info("Request URI: {}", appURI);
+        log.info("Request Headers: {}", requestHeader);
+        log.info("Request Parameters: {}", requestBody);
+
+        // send request to Mathpix API (process a pdf)
+        final ResponseEntity<String> response = restTemplate.postForEntity(appURI, requestEntity, String.class);
+
+        String pdfID;
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            try {
+                final JsonNode root = objectMapper.readTree(response.getBody());
+                pdfID = root.get("pdf_id").asText();
+                log.info("PDF ID: {}", pdfID);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (response.getStatusCode() != HttpStatus.OK) {
+            log.warn("OCR 과정에서 문제가 발생했습니다. Mathpix API 에러 메세지: {}", response.getBody());
+        }
+
+        return null;
+    }
+
+    private HttpHeaders createRequestHeader() {
         HttpHeaders requestHeader = new HttpHeaders();
         requestHeader.setContentType(MULTIPART_FORM_DATA);
         requestHeader.set("app_id", appId);
         requestHeader.set("app_key", appKey);
+        return requestHeader;
+    }
 
+    private MultiValueMap<String, Object> createRequestBody(final MultipartFile file, final ObjectMapper objectMapper) {
         MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("file", file.getResource());
 
-        ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("conversion_formats", Map.of("docx", true, "tex.zip", true));
         bodyMap.put("math_inline_delimiters", Arrays.asList("$", "$"));
@@ -69,25 +104,6 @@ public class PdfTranslationService {
         }
 
         requestBody.add("options_json", optionsJson);
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
-
-        log.info("Request URI: {}", requestURI);
-        log.info("Request Headers: {}", requestHeader);
-        log.info("Request Parameters: {}", requestBody);
-
-        ResponseEntity<String> response = restTemplate.postForEntity(requestURI, requestEntity, String.class);
-
-        if (response.getStatusCode() == HttpStatus.OK) {
-            try {
-                JsonNode root = objectMapper.readTree(response.getBody());
-                final String pdfID = root.get("pdf_id").asText();
-                log.info("PDF ID: " + pdfID);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        return null;
+        return requestBody;
     }
 }
