@@ -25,16 +25,18 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 @Component
 public class MathpixApiPdfProcessClient {
 
-    private static final String APP_URI = "https://api.mathpix.com/v3/pdf";
+    private final String appURI;
     private final String appId;
     private final String appKey;
     private final RestTemplate restTemplate;
 
     public MathpixApiPdfProcessClient(
+            @Value("${mathpix.app-uri}") String appURI,
             @Value("${mathpix.app-id}") String appId,
             @Value("${mathpix.app-key}") String appKey,
             RestTemplate restTemplate
     ) {
+        this.appURI = appURI;
         this.appId = appId;
         this.appKey = appKey;
         this.restTemplate = restTemplate;
@@ -47,24 +49,30 @@ public class MathpixApiPdfProcessClient {
         final MultiValueMap<String, Object> requestBody = createRequestBody(file, objectMapper);
         final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
-        log.info("Request URI: {}", APP_URI);
+        log.info("Request URI: {}", appURI);
         log.info("Request Headers: {}", requestHeader);
         log.info("Request Parameters: {}", requestBody);
 
-        final ResponseEntity<String> response = restTemplate.postForEntity(APP_URI, requestEntity, String.class);
+        // send request to Mathpix API (process a pdf)
+        final ResponseEntity<String> response = restTemplate.postForEntity(appURI, requestEntity, String.class);
+
+        String pdfID;
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            try {
+                final JsonNode root = objectMapper.readTree(response.getBody());
+                pdfID = root.get("pdf_id").asText();
+                log.info("PDF ID: {}", pdfID);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         if (response.getStatusCode() != HttpStatus.OK) {
-            log.warn("OCR 작업에 실패했습니다. Mathpix API 에러 메세지: {}", response.getBody());
-            throw new RuntimeException("OCR 작업에 실패했습니다.");
+            log.warn("OCR 과정에서 문제가 발생했습니다. Mathpix API 에러 메세지: {}", response.getBody());
         }
-        try {
-            final JsonNode root = objectMapper.readTree(response.getBody());
-            String pdfID = root.get("pdf_id").asText();
-            log.info("PDF ID: {}", pdfID);
-            return pdfID;
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+
+        return null;
     }
 
     private HttpHeaders createRequestHeader() {
