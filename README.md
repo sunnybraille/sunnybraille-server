@@ -22,7 +22,7 @@ Content-Type: multipart/form-data
 
 ##### Body
 
-- Multipart 폼 데이터 (구체적인 내용은 추후에 업데이트 예정)
+- file: 점역할 PDF 파일
 
 #### Response
 
