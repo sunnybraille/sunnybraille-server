@@ -18,6 +18,7 @@ public class PdfTranslationService {
     public Long translate(final MultipartFile file) {
         log.info("File: {}, Mathpix API 호출을 시작합니다.", file.getOriginalFilename());
         final String pdfId = mathpixApiPdfProcessClient.requestPdfId(file);
+        System.out.println("pdfId = " + pdfId);
 
         return null;
     }

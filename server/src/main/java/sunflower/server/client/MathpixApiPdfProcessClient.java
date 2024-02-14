@@ -56,23 +56,18 @@ public class MathpixApiPdfProcessClient {
         // send request to Mathpix API (process a pdf)
         final ResponseEntity<String> response = restTemplate.postForEntity(appURI, requestEntity, String.class);
 
-        String pdfID;
-
-        if (response.getStatusCode() == HttpStatus.OK) {
-            try {
-                final JsonNode root = objectMapper.readTree(response.getBody());
-                pdfID = root.get("pdf_id").asText();
-                log.info("PDF ID: {}", pdfID);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
         if (response.getStatusCode() != HttpStatus.OK) {
-            log.warn("OCR 과정에서 문제가 발생했습니다. Mathpix API 에러 메세지: {}", response.getBody());
+            log.warn("OCR 작업에 실패했습니다. Mathpix API 에러 메세지: {}", response.getBody());
+            throw new RuntimeException("OCR 작업에 실패했습니다.");
         }
-
-        return null;
+        try {
+            final JsonNode root = objectMapper.readTree(response.getBody());
+            String pdfID = root.get("pdf_id").asText();
+            log.info("PDF ID: {}", pdfID);
+            return pdfID;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private HttpHeaders createRequestHeader() {
