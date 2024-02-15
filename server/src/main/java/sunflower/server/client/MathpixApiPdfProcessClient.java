@@ -78,8 +78,10 @@ public class MathpixApiPdfProcessClient implements PdfProcessClient {
         return requestHeader;
     }
 
-    private MultiValueMap<String, Object> createRequestBody(final MultipartFile file,
-                                                            final ObjectMapper objectMapper) {
+    private MultiValueMap<String, Object> createRequestBody(
+            final MultipartFile file,
+            final ObjectMapper objectMapper
+    ) {
         MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("file", file.getResource());
 
@@ -87,15 +89,20 @@ public class MathpixApiPdfProcessClient implements PdfProcessClient {
         bodyMap.put("conversion_formats", Map.of("docx", true, "tex.zip", true));
         bodyMap.put("math_inline_delimiters", Arrays.asList("$", "$"));
         bodyMap.put("rm_spaces", true);
-        String optionsJson = null;
-
-        try {
-            optionsJson = objectMapper.writeValueAsString(bodyMap);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        String optionsJson = convertToJson(objectMapper, bodyMap);
 
         requestBody.add("options_json", optionsJson);
         return requestBody;
+    }
+
+    private String convertToJson(
+            final ObjectMapper objectMapper,
+            final Map<String, Object> body
+    ) {
+        try {
+            return objectMapper.writeValueAsString(body);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
