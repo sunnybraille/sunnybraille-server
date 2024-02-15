@@ -2,6 +2,7 @@ package sunflower.server.client;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -11,8 +12,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
+@Profile("!test")
 @Component
-public class MathpixApiPdfQueryClient {
+public class MathpixApiPdfQueryClient implements PdfQueryClient {
 
     private static final String APP_URI = "https://api.mathpix.com/v3/pdf/";
     private final String appId;

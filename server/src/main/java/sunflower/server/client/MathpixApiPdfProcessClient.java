@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,9 @@ import java.util.Map;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 
 @Slf4j
+@Profile("!test")
 @Component
-public class MathpixApiPdfProcessClient {
+public class MathpixApiPdfProcessClient implements PdfProcessClient {
 
     private final String appURI;
     private final String appId;
