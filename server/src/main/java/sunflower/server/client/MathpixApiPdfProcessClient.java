@@ -51,7 +51,6 @@ public class MathpixApiPdfProcessClient {
         log.info("Request Headers: {}", requestHeader);
         log.info("Request Parameters: {}", requestBody);
 
-        // send request to Mathpix API (process a pdf)
         final ResponseEntity<String> response = restTemplate.postForEntity(APP_URI, requestEntity, String.class);
 
         if (response.getStatusCode() != HttpStatus.OK) {
