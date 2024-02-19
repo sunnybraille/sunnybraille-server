@@ -24,4 +24,11 @@ public class Translations {
     private Double ocrPercentDone;
     private File ocrLatexFile;
     private File brfFile;
+
+    public Translations(final String mathpixPdfId, final Double ocrPercentDone, final File ocrLatexFile, final File brfFile) {
+        this.mathpixPdfId = mathpixPdfId;
+        this.ocrPercentDone = ocrPercentDone;
+        this.ocrLatexFile = ocrLatexFile;
+        this.brfFile = brfFile;
+    }
 }
