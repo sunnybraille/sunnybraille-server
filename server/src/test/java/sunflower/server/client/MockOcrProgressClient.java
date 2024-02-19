@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("test")
-public class MockPdfProgressClient implements PdfProgressClient {
+public class MockOcrProgressClient implements OcrProgressClient {
 
     @Override
     public boolean isDone(final String pdfId) {

@@ -1,6 +1,6 @@
 package sunflower.server.client;
 
-public interface PdfProgressClient {
+public interface OcrProgressClient {
 
     boolean isDone(String pdfId);
 }

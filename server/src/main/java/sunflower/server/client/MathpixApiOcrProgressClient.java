@@ -17,7 +17,7 @@ import java.time.Instant;
 @Slf4j
 @Profile("!test")
 @Component
-public class MathpixApiPdfProgressClient implements PdfProgressClient {
+public class MathpixApiOcrProgressClient implements OcrProgressClient {
 
     private static final String APP_URI = "https://api.mathpix.com/v3/pdf/";
     private static final String COMPLETED_STATUS = "completed";
@@ -28,7 +28,7 @@ public class MathpixApiPdfProgressClient implements PdfProgressClient {
     private final String appKey;
     private final RestTemplate restTemplate;
 
-    public MathpixApiPdfProgressClient(
+    public MathpixApiOcrProgressClient(
             @Value("${mathpix.app-id}") String appId,
             @Value("${mathpix.app-key}") String appKey,
             RestTemplate restTemplate
