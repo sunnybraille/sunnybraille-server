@@ -42,6 +42,7 @@ public class MathpixApiOcrRequestClient implements OcrRequestClient {
         this.restTemplate = restTemplate;
     }
 
+    @Override
     public String requestPdfId(final MultipartFile file) {
         final ObjectMapper objectMapper = new ObjectMapper();
 

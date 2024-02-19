@@ -38,6 +38,7 @@ public class MathpixApiOcrProgressClient implements OcrProgressClient {
         this.restTemplate = restTemplate;
     }
 
+    @Override
     public boolean isDone(final String pdfId) {
         final String requestURI = APP_URI + pdfId;
 
