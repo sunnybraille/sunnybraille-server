@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("test")
-public class MockPdfQueryClient implements PdfQueryClient {
+public class MockPdfProgressClient implements PdfProgressClient {
 
     @Override
-    public Object queryPdfBy(final String pdfId) {
-        return null;
+    public boolean isDone(final String pdfId) {
+        return true;
     }
 }
