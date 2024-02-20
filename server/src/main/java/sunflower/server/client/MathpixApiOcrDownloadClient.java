@@ -56,7 +56,7 @@ public class MathpixApiOcrDownloadClient implements OcrDownloadClient {
         log.info("Response Status Code: {}", response.getStatusCode());
         log.info("Response Body: {}", response.getBody());
 
-        final File file = new File(pdfId + ".zip");
+        final File file = new File("src/main/latex/" + pdfId + ".zip");
 
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(response.getBody());
