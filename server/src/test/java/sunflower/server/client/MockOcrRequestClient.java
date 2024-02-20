@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Component
-public class MockPdfProcessClient implements PdfProcessClient {
+public class MockOcrRequestClient implements OcrRequestClient {
 
     private static final String SECRET_KEY = "haebaragi-secret";
 

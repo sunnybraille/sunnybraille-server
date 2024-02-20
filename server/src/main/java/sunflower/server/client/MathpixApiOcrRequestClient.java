@@ -25,14 +25,14 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 @Slf4j
 @Profile("!test")
 @Component
-public class MathpixApiPdfProcessClient implements PdfProcessClient {
+public class MathpixApiOcrRequestClient implements OcrRequestClient {
 
     private static final String APP_URI = "https://api.mathpix.com/v3/pdf";
     private final String appId;
     private final String appKey;
     private final RestTemplate restTemplate;
 
-    public MathpixApiPdfProcessClient(
+    public MathpixApiOcrRequestClient(
             @Value("${mathpix.app-id}") String appId,
             @Value("${mathpix.app-key}") String appKey,
             RestTemplate restTemplate
@@ -42,6 +42,7 @@ public class MathpixApiPdfProcessClient implements PdfProcessClient {
         this.restTemplate = restTemplate;
     }
 
+    @Override
     public String requestPdfId(final MultipartFile file) {
         final ObjectMapper objectMapper = new ObjectMapper();
 

@@ -17,18 +17,18 @@ import java.time.Instant;
 @Slf4j
 @Profile("!test")
 @Component
-public class MathpixApiPdfQueryClient implements PdfQueryClient {
+public class MathpixApiOcrProgressClient implements OcrProgressClient {
 
     private static final String APP_URI = "https://api.mathpix.com/v3/pdf/";
     private static final String COMPLETED_STATUS = "completed";
-    private static final long POLLING_INTERVAL_MS = 1000L; // 1 second
+    private static final long POLLING_INTERVAL_MS = 1000L; // 1 sec
     private static final Duration MAX_WAIT_DURATION = Duration.ofSeconds(20);
 
     private final String appId;
     private final String appKey;
     private final RestTemplate restTemplate;
 
-    public MathpixApiPdfQueryClient(
+    public MathpixApiOcrProgressClient(
             @Value("${mathpix.app-id}") String appId,
             @Value("${mathpix.app-key}") String appKey,
             RestTemplate restTemplate
@@ -38,7 +38,8 @@ public class MathpixApiPdfQueryClient implements PdfQueryClient {
         this.restTemplate = restTemplate;
     }
 
-    public Object queryPdfBy(final String pdfId) {
+    @Override
+    public boolean isDone(final String pdfId) {
         final String requestURI = APP_URI + pdfId;
 
         HttpHeaders requestHeader = createRequestHeader();
@@ -52,7 +53,7 @@ public class MathpixApiPdfQueryClient implements PdfQueryClient {
         log.info("Response Status Code: {}", response.getStatusCode());
         log.info("Response Body: {}", response.getBody());
 
-        return null;
+        return true;
     }
 
     private ResponseEntity<String> fetchResponse(final String requestURI, final HttpEntity<MultiValueMap<String, Object>> requestEntity) {
