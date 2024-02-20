@@ -30,7 +30,7 @@ public class PdfTranslationService {
         log.info("Mathpix API의 OCR 작업이 완료되었습니다. File: {}, pdf id: {}", fileName, pdfId);
 
         final File latexFile = ocrDownloadClient.download(pdfId);
-        System.out.println("latexFile.getAbsolutePath() = " + latexFile.getAbsolutePath());
+        log.info("Latex 파일을 다운로드했습니다. File Name: {}", latexFile.getName());
 
         return null;
     }
