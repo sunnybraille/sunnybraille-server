@@ -11,7 +11,7 @@ public class MockOcrRequestClient implements OcrRequestClient {
 
     @Override
     public String requestPdfId(final MultipartFile file) {
-        return UUID.randomUUID().toString()
+        return UUID.randomUUID().toString();
     }
 
     @Override
