@@ -2,12 +2,14 @@ package sunflower.server.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import sunflower.server.application.dto.TranslationStatusDto;
+import sunflower.server.application.dto.TranslationsStatusDto;
+import sunflower.server.application.event.TranslationsSaveEvent;
 import sunflower.server.client.OcrDownloadClient;
 import sunflower.server.client.OcrProgressClient;
 import sunflower.server.client.OcrRequestClient;
@@ -25,20 +27,24 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class PdfTranslationService {
+public class TranslationsService {
 
     private final TranslationsRepository translationsRepository;
     private final ResourceLoader resourceLoader;
     private final OcrRequestClient ocrRequestClient;
     private final OcrProgressClient ocrProgressClient;
     private final OcrDownloadClient ocrDownloadClient;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public Long register(final MultipartFile file) {
         final String pdfURI = saveFile(file);
         log.info("Saved pdf File in Server. File URI: {}", pdfURI);
+        final Translations translations = translationsRepository.save(Translations.of(pdfURI));
 
-        return translationsRepository.save(Translations.of(pdfURI)).getId();
+        eventPublisher.publishEvent(new TranslationsSaveEvent(this, translations));
+
+        return translations.getId();
     }
 
     private String saveFile(final MultipartFile file) {
@@ -55,11 +61,11 @@ public class PdfTranslationService {
     }
 
     @Transactional
-    public TranslationStatusDto status(final Long id) {
+    public TranslationsStatusDto status(final Long id) {
         final Translations translations = translationsRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(id + "에 해당하는 자료가 존재하지 않습니다."));
 
-        return TranslationStatusDto.from(translations);
+        return TranslationsStatusDto.from(translations);
     }
 
     public Long translate(final MultipartFile file) {
