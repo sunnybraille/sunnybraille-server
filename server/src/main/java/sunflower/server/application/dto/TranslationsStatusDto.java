@@ -7,7 +7,7 @@ import sunflower.server.entity.Translations;
 
 @Getter
 @RequiredArgsConstructor
-public class TranslationStatusDto {
+public class TranslationsStatusDto {
 
     private final Long id;
     private final OcrStatus ocrStatus;
@@ -15,8 +15,8 @@ public class TranslationStatusDto {
     private final BrailleTranslationsStatus brailleTranslationsStatus;
     private final Integer brailleTranslationPercentDone;
 
-    public static TranslationStatusDto from(final Translations translations) {
-        return new TranslationStatusDto(
+    public static TranslationsStatusDto from(final Translations translations) {
+        return new TranslationsStatusDto(
                 translations.getId(),
                 ocrStatus(translations.getOcrProgressStatus()),
                 translations.getOcrPercentDone(),

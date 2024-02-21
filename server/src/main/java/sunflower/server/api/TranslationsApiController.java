@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import sunflower.server.api.response.TranslationStatusResponse;
-import sunflower.server.application.PdfTranslationService;
-import sunflower.server.application.dto.TranslationStatusDto;
+import sunflower.server.application.TranslationsService;
+import sunflower.server.application.dto.TranslationsStatusDto;
 import sunflower.server.exception.FileEmptyException;
 
 import java.net.URI;
 
 @RequiredArgsConstructor
 @RestController
-public class PdfTranslateApiController {
+public class TranslationsApiController {
 
-    private final PdfTranslationService pdfTranslationService;
+    private final TranslationsService translationsService;
 
     @PostMapping("/translate-pdf/new")
     public ResponseEntity<Void> registerPdf(@RequestPart("file") MultipartFile file) {
@@ -27,7 +27,7 @@ public class PdfTranslateApiController {
             throw new FileEmptyException(1, "빈 파일입니다.");
         }
 
-        final Long id = pdfTranslationService.register(file);
+        final Long id = translationsService.register(file);
 
         return ResponseEntity
                 .created(URI.create("/translations/" + id))
@@ -36,7 +36,7 @@ public class PdfTranslateApiController {
 
     @GetMapping("/translations/{id}/status")
     public ResponseEntity<TranslationStatusResponse> checkStatus(@PathVariable("id") Long id) {
-        final TranslationStatusDto dto = pdfTranslationService.status(id);
+        final TranslationsStatusDto dto = translationsService.status(id);
         return ResponseEntity.ok(TranslationStatusResponse.from(dto));
     }
 
@@ -47,7 +47,7 @@ public class PdfTranslateApiController {
         }
 
         try {
-            final Long location = pdfTranslationService.translate(file);
+            final Long location = translationsService.translate(file);
             return ResponseEntity
                     .created(URI.create("/translations/" + location))
                     .build();
