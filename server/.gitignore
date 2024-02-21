@@ -4,8 +4,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-**/src/main/latex/
 **/src/main/brf/
+**/src/main/latex/
+**/src/main/pdf/
 
 ### STS ###
 .apt_generated
