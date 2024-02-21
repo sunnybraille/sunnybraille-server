@@ -3,9 +3,10 @@ package sunflower.server.application;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.transaction.annotation.Transactional;
 import sunflower.server.application.event.TranslationsSaveEvent;
 import sunflower.server.client.OcrDownloadClient;
 import sunflower.server.client.OcrProgressClient;
@@ -41,7 +42,8 @@ public class TranslationsSaveEventListener {
     }
 
     @Async
-    @TransactionalEventListener
+    @Transactional
+    @EventListener
     public void handleTranslationsSave(final TranslationsSaveEvent event) {
         final Translations translations = translationsRepository.findById(event.getTranslations().getId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 Translation입니다!"));
