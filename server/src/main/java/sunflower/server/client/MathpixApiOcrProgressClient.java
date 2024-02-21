@@ -1,5 +1,7 @@
 package sunflower.server.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import sunflower.server.client.dto.OcrProgressDto;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -24,6 +27,7 @@ public class MathpixApiOcrProgressClient implements OcrProgressClient {
     private static final long POLLING_INTERVAL_MS = 1000L; // 1 sec
     private static final Duration MAX_WAIT_DURATION = Duration.ofSeconds(20);
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final String appId;
     private final String appKey;
     private final RestTemplate restTemplate;
@@ -36,6 +40,25 @@ public class MathpixApiOcrProgressClient implements OcrProgressClient {
         this.appId = appId;
         this.appKey = appKey;
         this.restTemplate = restTemplate;
+    }
+
+    @Override
+    public OcrProgressDto progress(final String pdfId) {
+        final String requestURI = APP_URI + pdfId;
+
+        HttpHeaders requestHeader = createRequestHeader();
+        final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(null, requestHeader);
+
+        log.info("Request URI: {}", requestURI);
+        log.info("Request Headers: {}", requestHeader);
+
+        final ResponseEntity<String> response = restTemplate.exchange(requestURI, HttpMethod.GET, requestEntity, String.class);
+
+        try {
+            return objectMapper.readValue(response.getBody(), OcrProgressDto.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
