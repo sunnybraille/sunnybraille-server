@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import sunflower.server.client.dto.OcrProgressStatus;
 
 import static jakarta.persistence.EnumType.STRING;
@@ -41,5 +40,10 @@ public class Translations {
         final Translations translations = new Translations();
         translations.setPdfURI(pdfURI);
         return translations;
+    }
+
+    public void startOcr() {
+        this.ocrPercentDone = 0;
+        this.ocrProgressStatus = OcrProgressStatus.SPLIT;
     }
 }
