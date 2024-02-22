@@ -11,7 +11,7 @@ public class TranslationStatusDto {
     private final Long id;
     private final OcrStatus ocrStatus;
     private final Integer ocrPercentDone;
-    private final BrailleTranslationsStatus brailleTranslationsStatus;
+    private final BrailleTranslationStatus brailleTranslationStatus;
     private final Integer brailleTranslationPercentDone;
 
     public static TranslationStatusDto from(final Translations translations) {
@@ -34,14 +34,14 @@ public class TranslationStatusDto {
         return TranslationStatusDto.OcrStatus.COMPLETED;
     }
 
-    private static BrailleTranslationsStatus brailleTranslationStatus(final Integer percentDone) {
+    private static BrailleTranslationStatus brailleTranslationStatus(final Integer percentDone) {
         if (percentDone == null || percentDone == 0) {
-            return BrailleTranslationsStatus.NONE;
+            return BrailleTranslationStatus.NONE;
         }
         if (percentDone == 100) {
-            return BrailleTranslationsStatus.COMPLETED;
+            return BrailleTranslationStatus.COMPLETED;
         }
-        return BrailleTranslationsStatus.PROCESSING;
+        return BrailleTranslationStatus.PROCESSING;
     }
 
     public enum OcrStatus {
@@ -52,7 +52,7 @@ public class TranslationStatusDto {
         ;
     }
 
-    public enum BrailleTranslationsStatus {
+    public enum BrailleTranslationStatus {
 
         NONE,
         PROCESSING,

@@ -19,7 +19,7 @@ public class TranslationStatusResponse {
                 dto.getId(),
                 dto.getOcrStatus().name(),
                 dto.getOcrPercentDone(),
-                dto.getBrailleTranslationsStatus().name(),
+                dto.getBrailleTranslationStatus().name(),
                 dto.getBrailleTranslationPercentDone()
         );
     }
