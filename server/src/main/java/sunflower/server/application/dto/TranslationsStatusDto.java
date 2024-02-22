@@ -2,7 +2,6 @@ package sunflower.server.application.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sunflower.server.client.dto.OcrProgressStatus;
 import sunflower.server.entity.Translations;
 
 @Getter
@@ -18,21 +17,21 @@ public class TranslationsStatusDto {
     public static TranslationsStatusDto from(final Translations translations) {
         return new TranslationsStatusDto(
                 translations.getId(),
-                ocrStatus(translations.getOcrProgressStatus()),
+                ocrStatus(translations.getOcrStatus()),
                 translations.getOcrPercentDone(),
-                brailleTranslationStatus(translations.getBrailleTranslationPercentDone()),
-                translations.getBrailleTranslationPercentDone()
+                brailleTranslationStatus(translations.getTranslationPercentDone()),
+                translations.getTranslationPercentDone()
         );
     }
 
-    private static OcrStatus ocrStatus(final OcrProgressStatus status) {
+    private static OcrStatus ocrStatus(final sunflower.server.client.dto.OcrStatus status) {
         if (status == null) {
-            return OcrStatus.NONE;
+            return TranslationsStatusDto.OcrStatus.NONE;
         }
-        if (status == OcrProgressStatus.SPLIT) {
-            return OcrStatus.PROCESSING;
+        if (status == sunflower.server.client.dto.OcrStatus.SPLIT) {
+            return TranslationsStatusDto.OcrStatus.PROCESSING;
         }
-        return OcrStatus.COMPLETED;
+        return TranslationsStatusDto.OcrStatus.COMPLETED;
     }
 
     private static BrailleTranslationsStatus brailleTranslationStatus(final Integer percentDone) {

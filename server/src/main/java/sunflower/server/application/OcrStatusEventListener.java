@@ -8,52 +8,54 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
-import sunflower.server.application.event.OcrRegisterEvent;
+import sunflower.server.application.event.OcrDownloadEvent;
 import sunflower.server.application.event.OcrStatusEvent;
-import sunflower.server.client.OcrRegisterClient;
+import sunflower.server.client.OcrStatusClient;
+import sunflower.server.client.dto.OcrStatus;
+import sunflower.server.client.dto.OcrStatusDto;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
-
-import java.io.File;
-import java.nio.file.Paths;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
 @Slf4j
 @NoArgsConstructor
 @Component
-public class OcrRegisterEventListener {
+public class OcrStatusEventListener {
 
     private TranslationsRepository translationsRepository;
-    private OcrRegisterClient ocrRegisterClient;
+    private OcrStatusClient ocrStatusClient;
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public OcrRegisterEventListener(
+    public OcrStatusEventListener(
             final TranslationsRepository translationsRepository,
-            final OcrRegisterClient ocrRegisterClient,
+            final OcrStatusClient ocrStatusClient,
             final ApplicationEventPublisher eventPublisher
     ) {
         this.translationsRepository = translationsRepository;
-        this.ocrRegisterClient = ocrRegisterClient;
+        this.ocrStatusClient = ocrStatusClient;
         this.eventPublisher = eventPublisher;
     }
 
     @Async
     @TransactionalEventListener
     @Transactional(propagation = REQUIRES_NEW)
-    public void registerOcr(final OcrRegisterEvent event) {
+    public void checkOcrStatus(final OcrStatusEvent event) {
         log.info("현재 스레드: {}", Thread.currentThread().getName());
 
-        final Long id = event.getTranslations().getId();
+        final Long id = event.getId();
         final Translations translations = translationsRepository.getById(id);
-        final String pdfURI = translations.getPdfURI().replace("file:", ""); // 확인 필요
-        final File file = Paths.get(pdfURI).toFile();
 
-        translations.startOcr();
-        final String pdfId = ocrRegisterClient.requestPdfId(file);
-        translations.registerPdfId(pdfId);
+        final String pdfId = event.getPdfId();
+        final OcrStatusDto status = ocrStatusClient.checkStatus(pdfId);
+        translations.changeOcrStatus(status);
 
-        eventPublisher.publishEvent(new OcrStatusEvent(this, id, pdfId));
+        if (status.getStatus() != OcrStatus.COMPLETED) {
+            eventPublisher.publishEvent(new OcrStatusEvent(this, id, pdfId));
+            return;
+        }
+
+        eventPublisher.publishEvent(new OcrDownloadEvent(this, id, pdfId));
     }
 }

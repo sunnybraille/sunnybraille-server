@@ -1,10 +1,10 @@
 package sunflower.server.client;
 
-import sunflower.server.client.dto.OcrProgressDto;
+import sunflower.server.client.dto.OcrStatusDto;
 
 public interface OcrStatusClient {
 
-    OcrProgressDto progress(String pdfId);
+    OcrStatusDto checkStatus(String pdfId);
 
     boolean isDone(String pdfId);
 }
