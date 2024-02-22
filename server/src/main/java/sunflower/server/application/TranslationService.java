@@ -10,9 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import sunflower.server.application.dto.TranslationStatusDto;
 import sunflower.server.application.event.OcrRegisterEvent;
-import sunflower.server.client.OcrDownloadClient;
-import sunflower.server.client.OcrRegisterClient;
-import sunflower.server.client.OcrStatusClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
 
@@ -29,9 +26,6 @@ public class TranslationService {
 
     private final TranslationsRepository translationsRepository;
     private final ResourceLoader resourceLoader;
-    private final OcrRegisterClient ocrRegisterClient;
-    private final OcrStatusClient ocrStatusClient;
-    private final OcrDownloadClient ocrDownloadClient;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
