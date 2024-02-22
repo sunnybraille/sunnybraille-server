@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -52,10 +53,16 @@ public class OcrStatusEventListener {
         translations.changeOcrStatus(status);
 
         if (status.getStatus() != OcrStatus.COMPLETED) {
-            eventPublisher.publishEvent(new OcrStatusEvent(this, id, pdfId));
+            retryCheckOcrStatus(id, pdfId);
             return;
         }
 
         eventPublisher.publishEvent(new OcrDownloadEvent(this, id, pdfId));
+    }
+
+    @Scheduled(fixedDelay = 1000)
+    private void retryCheckOcrStatus(final Long id, final String pdfId) {
+        log.info("Cheking OCR status for translations id: {}, pdf id: {}", id, pdfId);
+        eventPublisher.publishEvent(new OcrStatusEvent(this, id, pdfId));
     }
 }
