@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.UUID;
 
 @Component
-public class MockOcrRequestClient implements OcrRequestClient {
+public class MockOcrRegisterClient implements OcrRegisterClient {
 
     @Override
     public String requestPdfId(final MultipartFile file) {

@@ -27,7 +27,7 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 @Slf4j
 @Profile("!test")
 @Component
-public class MathpixApiOcrRequestClient implements OcrRequestClient {
+public class ApiOcrRegisterClient implements OcrRegisterClient {
 
     private static final String APP_URI = "https://api.mathpix.com/v3/pdf";
 
@@ -36,7 +36,7 @@ public class MathpixApiOcrRequestClient implements OcrRequestClient {
     private final String appKey;
     private final RestTemplate restTemplate;
 
-    public MathpixApiOcrRequestClient(
+    public ApiOcrRegisterClient(
             @Value("${mathpix.app-id}") String appId,
             @Value("${mathpix.app-key}") String appKey,
             RestTemplate restTemplate

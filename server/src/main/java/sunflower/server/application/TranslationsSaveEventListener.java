@@ -12,7 +12,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import sunflower.server.application.event.TranslationsSaveEvent;
 import sunflower.server.client.OcrDownloadClient;
 import sunflower.server.client.OcrProgressClient;
-import sunflower.server.client.OcrRequestClient;
+import sunflower.server.client.OcrRegisterClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
 
@@ -26,19 +26,19 @@ import java.util.NoSuchElementException;
 public class TranslationsSaveEventListener {
 
     private TranslationsRepository translationsRepository;
-    private OcrRequestClient ocrRequestClient;
+    private OcrRegisterClient ocrRegisterClient;
     private OcrProgressClient ocrProgressClient;
     private OcrDownloadClient ocrDownloadClient;
 
     @Autowired
     public TranslationsSaveEventListener(
             final TranslationsRepository translationsRepository,
-            final OcrRequestClient ocrRequestClient,
+            final OcrRegisterClient ocrRegisterClient,
             final OcrProgressClient ocrProgressClient,
             final OcrDownloadClient ocrDownloadClient
     ) {
         this.translationsRepository = translationsRepository;
-        this.ocrRequestClient = ocrRequestClient;
+        this.ocrRegisterClient = ocrRegisterClient;
         this.ocrProgressClient = ocrProgressClient;
         this.ocrDownloadClient = ocrDownloadClient;
     }
@@ -55,7 +55,7 @@ public class TranslationsSaveEventListener {
         final File file = Paths.get(pdfURI).toFile();
 
         translations.startOcr();
-        final String pdfId = ocrRequestClient.requestPdfId(file);
+        final String pdfId = ocrRegisterClient.requestPdfId(file);
         translations.setOcrPdfId(pdfId);
         translationsRepository.save(translations);
     }
