@@ -1,4 +1,4 @@
-package sunflower.server.application;
+package sunflower.server.application.eventlistener;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
