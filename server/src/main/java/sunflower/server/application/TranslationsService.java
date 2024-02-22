@@ -68,6 +68,7 @@ public class TranslationsService {
         return TranslationsStatusDto.from(translations);
     }
 
+    @Deprecated
     public Long translate(final MultipartFile file) {
         final String fileName = file.getOriginalFilename();
         log.info("File: {}, Mathpix API 호출을 시작합니다.", fileName);

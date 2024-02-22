@@ -66,6 +66,7 @@ public class ApiOcrStatusClient implements OcrStatusClient {
         }
     }
 
+    @Deprecated
     @Override
     public boolean isDone(final String pdfId) {
         final String requestURI = appURI + pdfId;

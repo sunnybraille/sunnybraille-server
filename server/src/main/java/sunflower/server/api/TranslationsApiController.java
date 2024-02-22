@@ -40,6 +40,7 @@ public class TranslationsApiController {
         return ResponseEntity.ok(TranslationStatusResponse.from(dto));
     }
 
+    @Deprecated
     @PostMapping("/translate-pdf")
     public ResponseEntity<Void> translatePdf(@RequestPart("file") MultipartFile file) {
         if (file.isEmpty()) {
