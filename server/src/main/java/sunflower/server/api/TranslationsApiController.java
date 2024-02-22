@@ -21,7 +21,7 @@ public class TranslationsApiController {
 
     private final TranslationsService translationsService;
 
-    @PostMapping("/translate-pdf/new")
+    @PostMapping("/translations")
     public ResponseEntity<Void> registerPdf(@RequestPart("file") MultipartFile file) {
         if (file.isEmpty()) {
             throw new FileEmptyException(1, "빈 파일입니다.");
@@ -38,6 +38,11 @@ public class TranslationsApiController {
     public ResponseEntity<TranslationStatusResponse> checkStatus(@PathVariable("id") Long id) {
         final TranslationsStatusDto dto = translationsService.status(id);
         return ResponseEntity.ok(TranslationStatusResponse.from(dto));
+    }
+
+    @GetMapping("/translations/{id}")
+    public ResponseEntity<Void> downloadBrfFile(@PathVariable("id") Long id) {
+        return null;
     }
 
     @Deprecated
