@@ -36,7 +36,7 @@ public class TranslationService {
 
     @Transactional
     public Long register(final MultipartFile file) {
-        final String pdfURI = saveFile(file);
+        final String pdfURI = saveFile(file).replace("file:", "");
         log.info("Saved pdf File in Server. File URI: {}", pdfURI);
         final Translations translations = translationsRepository.save(Translations.of(pdfURI));
 
@@ -53,7 +53,7 @@ public class TranslationService {
 
         try {
             Files.copy(file.getInputStream(), path);
-            final Resource resource = resourceLoader.getResource("file:" + path);
+            final Resource resource = resourceLoader.getResource("file:" + path); // TODO: なんで「ファイル」だって
             return resource.getURI().toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
