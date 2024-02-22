@@ -6,6 +6,7 @@ public interface OcrStatusClient {
 
     OcrStatusDto checkStatus(String pdfId);
 
+    @Deprecated
     boolean isDone(String pdfId);
 }
 

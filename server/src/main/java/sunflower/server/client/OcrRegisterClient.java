@@ -6,6 +6,7 @@ import java.io.File;
 
 public interface OcrRegisterClient {
 
+    @Deprecated
     String requestPdfId(final MultipartFile file);
 
     String requestPdfId(final File file);

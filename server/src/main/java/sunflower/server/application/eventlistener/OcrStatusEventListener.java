@@ -1,4 +1,4 @@
-package sunflower.server.application;
+package sunflower.server.application.eventlistener;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +57,7 @@ public class OcrStatusEventListener {
             return;
         }
 
-        eventPublisher.publishEvent(new OcrDownloadEvent(this, id, pdfId));
+        eventPublisher.publishEvent(new OcrDownloadEvent(this, id));
     }
 
     @Scheduled(fixedDelay = 1000)
