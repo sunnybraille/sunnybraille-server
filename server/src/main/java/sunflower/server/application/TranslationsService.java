@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import sunflower.server.application.dto.TranslationsStatusDto;
-import sunflower.server.application.event.TranslationsSaveEvent;
+import sunflower.server.application.event.OcrRegisterEvent;
 import sunflower.server.client.OcrDownloadClient;
 import sunflower.server.client.OcrStatusClient;
 import sunflower.server.client.OcrRegisterClient;
@@ -42,7 +42,7 @@ public class TranslationsService {
         log.info("Saved pdf File in Server. File URI: {}", pdfURI);
         final Translations translations = translationsRepository.save(Translations.of(pdfURI));
 
-        eventPublisher.publishEvent(new TranslationsSaveEvent(this, translations));
+        eventPublisher.publishEvent(new OcrRegisterEvent(this, translations));
         log.info("pdf file 저장 이벤트를 발행했습니다!");
         log.info("현재 스레드: {}", Thread.currentThread().getName());
 

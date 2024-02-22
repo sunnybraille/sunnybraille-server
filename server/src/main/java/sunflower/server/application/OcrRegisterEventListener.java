@@ -3,14 +3,13 @@ package sunflower.server.application;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
-import sunflower.server.application.event.TranslationsSaveEvent;
-import sunflower.server.client.OcrDownloadClient;
+import sunflower.server.application.event.OcrStatusEvent;
 import sunflower.server.client.OcrRegisterClient;
-import sunflower.server.client.OcrStatusClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
 
@@ -23,30 +22,27 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRES_NE
 @Slf4j
 @NoArgsConstructor
 @Component
-public class TranslationsSaveEventListener {
+public class OcrRegisterEventListener {
 
     private TranslationsRepository translationsRepository;
     private OcrRegisterClient ocrRegisterClient;
-    private OcrStatusClient ocrStatusClient;
-    private OcrDownloadClient ocrDownloadClient;
+    private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public TranslationsSaveEventListener(
+    public OcrRegisterEventListener(
             final TranslationsRepository translationsRepository,
             final OcrRegisterClient ocrRegisterClient,
-            final OcrStatusClient ocrStatusClient,
-            final OcrDownloadClient ocrDownloadClient
+            final ApplicationEventPublisher eventPublisher
     ) {
         this.translationsRepository = translationsRepository;
         this.ocrRegisterClient = ocrRegisterClient;
-        this.ocrStatusClient = ocrStatusClient;
-        this.ocrDownloadClient = ocrDownloadClient;
+        this.eventPublisher = eventPublisher;
     }
 
     @Async
     @TransactionalEventListener
     @Transactional(propagation = REQUIRES_NEW)
-    public void handleTranslationsSave(final TranslationsSaveEvent event) {
+    public void registerOcr(final sunflower.server.application.event.OcrRegisterEvent event) {
         log.info("현재 스레드: {}", Thread.currentThread().getName());
 
         final Translations translations = translationsRepository.findById(event.getTranslations().getId())
@@ -57,5 +53,7 @@ public class TranslationsSaveEventListener {
         translations.startOcr();
         final String pdfId = ocrRegisterClient.requestPdfId(file);
         translations.setOcrPdfId(pdfId);
+
+        eventPublisher.publishEvent(new OcrStatusEvent(this, pdfId));
     }
 }
