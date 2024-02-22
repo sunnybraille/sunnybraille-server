@@ -16,7 +16,6 @@ import sunflower.server.client.OcrStatusClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,22 +65,5 @@ public class TranslationService {
         final Translations translations = translationsRepository.getById(id);
 
         return TranslationStatusDto.from(translations);
-    }
-
-    @Deprecated
-    public Long translate(final MultipartFile file) {
-        final String fileName = file.getOriginalFilename();
-        log.info("File: {}, Mathpix API 호출을 시작합니다.", fileName);
-
-        final String pdfId = ocrRegisterClient.requestPdfId(file);
-        log.info("Mathpix API로부터 pdf id를 받았습니다. File: {}, pdf id: {}", fileName, pdfId);
-
-        final boolean isDone = ocrStatusClient.isDone(pdfId);
-        log.info("Mathpix API의 OCR 작업이 완료되었습니다. File: {}, pdf id: {}", fileName, pdfId);
-
-        final File latexFile = ocrDownloadClient.download(pdfId);
-        log.info("Latex 파일을 다운로드했습니다. File Name: {}", latexFile.getName());
-
-        return null;
     }
 }
