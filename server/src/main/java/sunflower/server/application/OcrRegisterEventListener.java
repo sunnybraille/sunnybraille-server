@@ -16,7 +16,6 @@ import sunflower.server.repository.TranslationsRepository;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.NoSuchElementException;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
@@ -46,8 +45,8 @@ public class OcrRegisterEventListener {
     public void registerOcr(final OcrRegisterEvent event) {
         log.info("현재 스레드: {}", Thread.currentThread().getName());
 
-        final Translations translations = translationsRepository.findById(event.getTranslations().getId())
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 Translation입니다!"));
+        final Long id = event.getTranslations().getId();
+        final Translations translations = translationsRepository.getById(id);
         final String pdfURI = translations.getPdfURI().replace("file:", ""); // 확인 필요
         final File file = Paths.get(pdfURI).toFile();
 
@@ -55,6 +54,6 @@ public class OcrRegisterEventListener {
         final String pdfId = ocrRegisterClient.requestPdfId(file);
         translations.setOcrPdfId(pdfId);
 
-        eventPublisher.publishEvent(new OcrStatusEvent(this, pdfId));
+        eventPublisher.publishEvent(new OcrStatusEvent(this, id, pdfId));
     }
 }

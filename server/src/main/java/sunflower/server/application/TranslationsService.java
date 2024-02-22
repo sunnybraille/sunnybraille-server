@@ -11,8 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import sunflower.server.application.dto.TranslationsStatusDto;
 import sunflower.server.application.event.OcrRegisterEvent;
 import sunflower.server.client.OcrDownloadClient;
-import sunflower.server.client.OcrStatusClient;
 import sunflower.server.client.OcrRegisterClient;
+import sunflower.server.client.OcrStatusClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
 
@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Slf4j
@@ -64,8 +63,7 @@ public class TranslationsService {
 
     @Transactional
     public TranslationsStatusDto status(final Long id) {
-        final Translations translations = translationsRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(id + "에 해당하는 자료가 존재하지 않습니다."));
+        final Translations translations = translationsRepository.getById(id);
 
         return TranslationsStatusDto.from(translations);
     }
