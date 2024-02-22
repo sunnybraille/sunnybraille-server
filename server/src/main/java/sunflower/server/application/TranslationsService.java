@@ -43,6 +43,8 @@ public class TranslationsService {
         final Translations translations = translationsRepository.save(Translations.of(pdfURI));
 
         eventPublisher.publishEvent(new TranslationsSaveEvent(this, translations));
+        log.info("pdf file 저장 이벤트를 발행했습니다!");
+        log.info("현재 스레드: {}", Thread.currentThread().getName());
 
         return translations.getId();
     }

@@ -3,10 +3,12 @@ package sunflower.server.application;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 import sunflower.server.application.event.TranslationsSaveEvent;
 import sunflower.server.client.OcrDownloadClient;
 import sunflower.server.client.OcrProgressClient;
@@ -42,9 +44,11 @@ public class TranslationsSaveEventListener {
     }
 
     @Async
-    @Transactional
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handleTranslationsSave(final TranslationsSaveEvent event) {
+        log.info("현재 스레드: {}", Thread.currentThread().getName());
+
         final Translations translations = translationsRepository.findById(event.getTranslations().getId())
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 Translation입니다!"));
         final String pdfURI = translations.getPdfURI().replace("file:", ""); // 일단 어쩔 수 없이 했는데 코드 파악 필요
