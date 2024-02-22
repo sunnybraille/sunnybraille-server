@@ -1,16 +1,15 @@
 package sunflower.server.application.event;
 
+import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import sunflower.server.application.OcrStatusEventListener;
 
+@Getter
 public class OcrDownloadEvent extends ApplicationEvent {
 
     private final Long id;
-    private final String pdfId;
 
-    public OcrDownloadEvent(final Object source, final Long id, final String pdfId) {
+    public OcrDownloadEvent(final Object source, final Long id) {
         super(source);
         this.id = id;
-        this.pdfId = pdfId;
     }
 }

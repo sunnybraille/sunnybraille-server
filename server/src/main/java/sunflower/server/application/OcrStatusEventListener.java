@@ -57,7 +57,7 @@ public class OcrStatusEventListener {
             return;
         }
 
-        eventPublisher.publishEvent(new OcrDownloadEvent(this, id, pdfId));
+        eventPublisher.publishEvent(new OcrDownloadEvent(this, id));
     }
 
     @Scheduled(fixedDelay = 1000)
