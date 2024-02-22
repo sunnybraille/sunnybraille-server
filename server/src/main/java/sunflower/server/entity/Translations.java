@@ -24,7 +24,7 @@ public class Translations {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    private String fileName;
+    private String inputFileName;
     private String pdfURI;
     private String ocrPdfId;
 
@@ -36,14 +36,19 @@ public class Translations {
     private Integer translationPercentDone;
     private String brfFileURI;
 
-    public static Translations of(final String pdfURI) {
+    public static Translations of(final String pdfURI, final String inputFileName) {
         final Translations translations = new Translations();
         translations.changePdfURI(pdfURI);
+        translations.changeInputFileName(inputFileName);
         return translations;
     }
 
     private void changePdfURI(final String pdfURI) {
         this.pdfURI = pdfURI;
+    }
+
+    private void changeInputFileName(final String inputFileName) {
+        this.inputFileName = inputFileName;
     }
 
     public void startOcr() {

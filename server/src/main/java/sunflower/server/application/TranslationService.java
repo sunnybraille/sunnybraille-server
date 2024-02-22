@@ -10,9 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import sunflower.server.application.dto.TranslationStatusDto;
 import sunflower.server.application.event.OcrRegisterEvent;
-import sunflower.server.client.OcrDownloadClient;
-import sunflower.server.client.OcrRegisterClient;
-import sunflower.server.client.OcrStatusClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
 
@@ -29,16 +26,14 @@ public class TranslationService {
 
     private final TranslationsRepository translationsRepository;
     private final ResourceLoader resourceLoader;
-    private final OcrRegisterClient ocrRegisterClient;
-    private final OcrStatusClient ocrStatusClient;
-    private final OcrDownloadClient ocrDownloadClient;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public Long register(final MultipartFile file) {
         final String pdfURI = saveFile(file).replace("file:", "");
         log.info("Saved pdf File in Server. File URI: {}", pdfURI);
-        final Translations translations = translationsRepository.save(Translations.of(pdfURI));
+
+        final Translations translations = translationsRepository.save(Translations.of(pdfURI, file.getOriginalFilename()));
 
         eventPublisher.publishEvent(new OcrRegisterEvent(this, translations));
         log.info("pdf file 저장 이벤트를 발행했습니다!");
