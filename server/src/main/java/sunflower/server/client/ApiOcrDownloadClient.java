@@ -20,17 +20,18 @@ import java.io.IOException;
 @Component
 public class ApiOcrDownloadClient implements OcrDownloadClient {
 
-    private static final String APP_URI = "https://api.mathpix.com/v3/pdf/%s.tex";
-
+    private final String appURI;
     private final String appId;
     private final String appKey;
     private final RestTemplate restTemplate;
 
     public ApiOcrDownloadClient(
-            @Value("${mathpix.app-id}") String appId,
-            @Value("${mathpix.app-key}") String appKey,
+            @Value("${ocr.download-uri}") String appURI,
+            @Value("${ocr.app-id}") String appId,
+            @Value("${ocr.app-key}") String appKey,
             RestTemplate restTemplate
     ) {
+        this.appURI = appURI;
         this.appId = appId;
         this.appKey = appKey;
         this.restTemplate = restTemplate;
@@ -38,7 +39,7 @@ public class ApiOcrDownloadClient implements OcrDownloadClient {
 
     @Override
     public File download(final String pdfId) {
-        final String requestURI = String.format(APP_URI, pdfId);
+        final String requestURI = String.format(appURI, pdfId);
 
         HttpHeaders requestHeader = createRequestHeader();
         final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(null, requestHeader);
