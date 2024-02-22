@@ -1,11 +1,10 @@
 package sunflower.server.client;
 
-import org.hibernate.annotations.processing.Find;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
-public interface OcrRequestClient {
+public interface OcrRegisterClient {
 
     String requestPdfId(final MultipartFile file);
 

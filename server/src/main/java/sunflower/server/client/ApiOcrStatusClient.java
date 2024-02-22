@@ -20,23 +20,25 @@ import java.time.Instant;
 @Slf4j
 @Profile("!test")
 @Component
-public class MathpixApiOcrProgressClient implements OcrProgressClient {
+public class ApiOcrStatusClient implements OcrStatusClient {
 
-    private static final String APP_URI = "https://api.mathpix.com/v3/pdf/";
     private static final String COMPLETED_STATUS = "completed";
     private static final long POLLING_INTERVAL_MS = 1000L; // 1 sec
     private static final Duration MAX_WAIT_DURATION = Duration.ofSeconds(20);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final String appURI;
     private final String appId;
     private final String appKey;
     private final RestTemplate restTemplate;
 
-    public MathpixApiOcrProgressClient(
-            @Value("${mathpix.app-id}") String appId,
-            @Value("${mathpix.app-key}") String appKey,
+    public ApiOcrStatusClient(
+            @Value("${ocr.status-uri}") String appURI,
+            @Value("${ocr.app-id}") String appId,
+            @Value("${ocr.app-key}") String appKey,
             RestTemplate restTemplate
     ) {
+        this.appURI = appURI;
         this.appId = appId;
         this.appKey = appKey;
         this.restTemplate = restTemplate;
@@ -44,7 +46,7 @@ public class MathpixApiOcrProgressClient implements OcrProgressClient {
 
     @Override
     public OcrProgressDto progress(final String pdfId) {
-        final String requestURI = APP_URI + pdfId;
+        final String requestURI = appURI + pdfId;
 
         HttpHeaders requestHeader = createRequestHeader();
         final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(null, requestHeader);
@@ -63,7 +65,7 @@ public class MathpixApiOcrProgressClient implements OcrProgressClient {
 
     @Override
     public boolean isDone(final String pdfId) {
-        final String requestURI = APP_URI + pdfId;
+        final String requestURI = appURI + pdfId;
 
         HttpHeaders requestHeader = createRequestHeader();
         final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(null, requestHeader);

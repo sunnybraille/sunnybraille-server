@@ -27,20 +27,21 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 @Slf4j
 @Profile("!test")
 @Component
-public class MathpixApiOcrRequestClient implements OcrRequestClient {
-
-    private static final String APP_URI = "https://api.mathpix.com/v3/pdf";
+public class ApiOcrRegisterClient implements OcrRegisterClient {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final String appURI;
     private final String appId;
     private final String appKey;
     private final RestTemplate restTemplate;
 
-    public MathpixApiOcrRequestClient(
-            @Value("${mathpix.app-id}") String appId,
-            @Value("${mathpix.app-key}") String appKey,
+    public ApiOcrRegisterClient(
+            @Value("${ocr.register-uri}") String appURI,
+            @Value("${ocr.app-id}") String appId,
+            @Value("${ocr.app-key}") String appKey,
             RestTemplate restTemplate
     ) {
+        this.appURI = appURI;
         this.appId = appId;
         this.appKey = appKey;
         this.restTemplate = restTemplate;
@@ -53,11 +54,11 @@ public class MathpixApiOcrRequestClient implements OcrRequestClient {
         final MultiValueMap<String, Object> requestBody = createRequestBody(file);
         final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
-        log.info("Request URI: {}", APP_URI);
+        log.info("Request URI: {}", appURI);
         log.info("Request Headers: {}", requestHeader);
         log.info("Request Parameters: {}", requestBody);
 
-        final ResponseEntity<String> response = restTemplate.postForEntity(APP_URI, requestEntity, String.class);
+        final ResponseEntity<String> response = restTemplate.postForEntity(appURI, requestEntity, String.class);
 
         if (response.getStatusCode() != HttpStatus.OK) {
             log.warn("OCR 과정에서 문제가 발생했습니다. Mathpix API 에러 메세지: {}", response.getBody());
@@ -112,11 +113,11 @@ public class MathpixApiOcrRequestClient implements OcrRequestClient {
         final MultiValueMap<String, Object> requestBody = createRequestBody(file);
         final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
 
-        log.info("Request URI: {}", APP_URI);
+        log.info("Request URI: {}", appURI);
         log.info("Request Headers: {}", requestHeader);
         log.info("Request Parameters: {}", requestBody);
 
-        final ResponseEntity<String> response = restTemplate.postForEntity(APP_URI, requestEntity, String.class);
+        final ResponseEntity<String> response = restTemplate.postForEntity(appURI, requestEntity, String.class);
 
         if (response.getStatusCode() != HttpStatus.OK) {
             log.warn("OCR 과정에서 문제가 발생했습니다. Mathpix API 에러 메세지: {}", response.getBody());

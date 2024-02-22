@@ -2,7 +2,7 @@ package sunflower.server.client;
 
 import sunflower.server.client.dto.OcrProgressDto;
 
-public interface OcrProgressClient {
+public interface OcrStatusClient {
 
     OcrProgressDto progress(String pdfId);
 

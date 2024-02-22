@@ -6,7 +6,7 @@ import sunflower.server.client.dto.OcrProgressDto;
 
 @Component
 @Profile("test")
-public class MockOcrProgressClient implements OcrProgressClient {
+public class MockOcrStatusClient implements OcrStatusClient {
 
     @Override
     public OcrProgressDto progress(final String pdfId) {
