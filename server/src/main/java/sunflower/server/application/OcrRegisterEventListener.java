@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
+import sunflower.server.application.event.OcrRegisterEvent;
 import sunflower.server.application.event.OcrStatusEvent;
 import sunflower.server.client.OcrRegisterClient;
 import sunflower.server.entity.Translations;
@@ -42,7 +43,7 @@ public class OcrRegisterEventListener {
     @Async
     @TransactionalEventListener
     @Transactional(propagation = REQUIRES_NEW)
-    public void registerOcr(final sunflower.server.application.event.OcrRegisterEvent event) {
+    public void registerOcr(final OcrRegisterEvent event) {
         log.info("현재 스레드: {}", Thread.currentThread().getName());
 
         final Translations translations = translationsRepository.findById(event.getTranslations().getId())
