@@ -8,7 +8,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import sunflower.server.application.dto.TranslationsStatusDto;
+import sunflower.server.application.dto.TranslationStatusDto;
 import sunflower.server.application.event.OcrRegisterEvent;
 import sunflower.server.client.OcrDownloadClient;
 import sunflower.server.client.OcrRegisterClient;
@@ -26,7 +26,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class TranslationsService {
+public class TranslationService {
 
     private final TranslationsRepository translationsRepository;
     private final ResourceLoader resourceLoader;
@@ -62,10 +62,10 @@ public class TranslationsService {
     }
 
     @Transactional
-    public TranslationsStatusDto status(final Long id) {
+    public TranslationStatusDto status(final Long id) {
         final Translations translations = translationsRepository.getById(id);
 
-        return TranslationsStatusDto.from(translations);
+        return TranslationStatusDto.from(translations);
     }
 
     @Deprecated

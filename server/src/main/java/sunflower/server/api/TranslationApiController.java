@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import sunflower.server.api.response.TranslationStatusResponse;
-import sunflower.server.application.TranslationsService;
-import sunflower.server.application.dto.TranslationsStatusDto;
+import sunflower.server.application.TranslationService;
+import sunflower.server.application.dto.TranslationStatusDto;
 import sunflower.server.exception.FileEmptyException;
 
 import java.net.URI;
 
 @RequiredArgsConstructor
 @RestController
-public class TranslationsApiController {
+public class TranslationApiController {
 
-    private final TranslationsService translationsService;
+    private final TranslationService translationService;
 
     @PostMapping("/translations")
     public ResponseEntity<Void> registerPdf(@RequestPart("file") MultipartFile file) {
@@ -27,7 +27,7 @@ public class TranslationsApiController {
             throw new FileEmptyException(1, "빈 파일입니다.");
         }
 
-        final Long id = translationsService.register(file);
+        final Long id = translationService.register(file);
 
         return ResponseEntity
                 .created(URI.create("/translations/" + id))
@@ -36,7 +36,7 @@ public class TranslationsApiController {
 
     @GetMapping("/translations/{id}/status")
     public ResponseEntity<TranslationStatusResponse> checkStatus(@PathVariable("id") Long id) {
-        final TranslationsStatusDto dto = translationsService.status(id);
+        final TranslationStatusDto dto = translationService.status(id);
         return ResponseEntity.ok(TranslationStatusResponse.from(dto));
     }
 
@@ -53,7 +53,7 @@ public class TranslationsApiController {
         }
 
         try {
-            final Long location = translationsService.translate(file);
+            final Long location = translationService.translate(file);
             return ResponseEntity
                     .created(URI.create("/translations/" + location))
                     .build();

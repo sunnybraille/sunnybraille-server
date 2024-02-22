@@ -6,7 +6,7 @@ import sunflower.server.entity.Translations;
 
 @Getter
 @RequiredArgsConstructor
-public class TranslationsStatusDto {
+public class TranslationStatusDto {
 
     private final Long id;
     private final OcrStatus ocrStatus;
@@ -14,8 +14,8 @@ public class TranslationsStatusDto {
     private final BrailleTranslationsStatus brailleTranslationsStatus;
     private final Integer brailleTranslationPercentDone;
 
-    public static TranslationsStatusDto from(final Translations translations) {
-        return new TranslationsStatusDto(
+    public static TranslationStatusDto from(final Translations translations) {
+        return new TranslationStatusDto(
                 translations.getId(),
                 ocrStatus(translations.getOcrStatus()),
                 translations.getOcrPercentDone(),
@@ -26,12 +26,12 @@ public class TranslationsStatusDto {
 
     private static OcrStatus ocrStatus(final sunflower.server.client.dto.OcrStatus status) {
         if (status == null) {
-            return TranslationsStatusDto.OcrStatus.NONE;
+            return TranslationStatusDto.OcrStatus.NONE;
         }
         if (status == sunflower.server.client.dto.OcrStatus.SPLIT) {
-            return TranslationsStatusDto.OcrStatus.PROCESSING;
+            return TranslationStatusDto.OcrStatus.PROCESSING;
         }
-        return TranslationsStatusDto.OcrStatus.COMPLETED;
+        return TranslationStatusDto.OcrStatus.COMPLETED;
     }
 
     private static BrailleTranslationsStatus brailleTranslationStatus(final Integer percentDone) {

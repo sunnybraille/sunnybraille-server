@@ -2,7 +2,7 @@ package sunflower.server.api.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sunflower.server.application.dto.TranslationsStatusDto;
+import sunflower.server.application.dto.TranslationStatusDto;
 
 @Getter
 @RequiredArgsConstructor
@@ -14,7 +14,7 @@ public class TranslationStatusResponse {
     private final String brailleTranslationsStatus;
     private final Integer brailleTranslationPercentDone;
 
-    public static TranslationStatusResponse from(final TranslationsStatusDto dto) {
+    public static TranslationStatusResponse from(final TranslationStatusDto dto) {
         return new TranslationStatusResponse(
                 dto.getId(),
                 dto.getOcrStatus().name(),
