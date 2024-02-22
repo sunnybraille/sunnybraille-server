@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import sunflower.server.client.dto.OcrProgressDto;
+import sunflower.server.client.dto.OcrStatusDto;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -45,7 +45,7 @@ public class ApiOcrStatusClient implements OcrStatusClient {
     }
 
     @Override
-    public OcrProgressDto progress(final String pdfId) {
+    public OcrStatusDto checkStatus(final String pdfId) {
         final String requestURI = appURI + pdfId;
 
         HttpHeaders requestHeader = createRequestHeader();
@@ -56,8 +56,11 @@ public class ApiOcrStatusClient implements OcrStatusClient {
 
         final ResponseEntity<String> response = restTemplate.exchange(requestURI, HttpMethod.GET, requestEntity, String.class);
 
+        final String responseBody = response.getBody();
+        log.info("Response Body: {}", responseBody);
+
         try {
-            return objectMapper.readValue(response.getBody(), OcrProgressDto.class);
+            return objectMapper.readValue(responseBody, OcrStatusDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
