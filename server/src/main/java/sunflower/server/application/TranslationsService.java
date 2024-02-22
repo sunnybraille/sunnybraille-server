@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sunflower.server.application.dto.TranslationsStatusDto;
 import sunflower.server.application.event.TranslationsSaveEvent;
 import sunflower.server.client.OcrDownloadClient;
-import sunflower.server.client.OcrProgressClient;
+import sunflower.server.client.OcrStatusClient;
 import sunflower.server.client.OcrRegisterClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
@@ -32,7 +32,7 @@ public class TranslationsService {
     private final TranslationsRepository translationsRepository;
     private final ResourceLoader resourceLoader;
     private final OcrRegisterClient ocrRegisterClient;
-    private final OcrProgressClient ocrProgressClient;
+    private final OcrStatusClient ocrStatusClient;
     private final OcrDownloadClient ocrDownloadClient;
     private final ApplicationEventPublisher eventPublisher;
 
@@ -77,7 +77,7 @@ public class TranslationsService {
         final String pdfId = ocrRegisterClient.requestPdfId(file);
         log.info("Mathpix API로부터 pdf id를 받았습니다. File: {}, pdf id: {}", fileName, pdfId);
 
-        final boolean isDone = ocrProgressClient.isDone(pdfId);
+        final boolean isDone = ocrStatusClient.isDone(pdfId);
         log.info("Mathpix API의 OCR 작업이 완료되었습니다. File: {}, pdf id: {}", fileName, pdfId);
 
         final File latexFile = ocrDownloadClient.download(pdfId);

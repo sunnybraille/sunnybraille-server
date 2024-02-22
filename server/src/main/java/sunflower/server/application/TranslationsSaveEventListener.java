@@ -11,7 +11,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import sunflower.server.application.event.TranslationsSaveEvent;
 import sunflower.server.client.OcrDownloadClient;
-import sunflower.server.client.OcrProgressClient;
+import sunflower.server.client.OcrStatusClient;
 import sunflower.server.client.OcrRegisterClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
@@ -27,19 +27,19 @@ public class TranslationsSaveEventListener {
 
     private TranslationsRepository translationsRepository;
     private OcrRegisterClient ocrRegisterClient;
-    private OcrProgressClient ocrProgressClient;
+    private OcrStatusClient ocrStatusClient;
     private OcrDownloadClient ocrDownloadClient;
 
     @Autowired
     public TranslationsSaveEventListener(
             final TranslationsRepository translationsRepository,
             final OcrRegisterClient ocrRegisterClient,
-            final OcrProgressClient ocrProgressClient,
+            final OcrStatusClient ocrStatusClient,
             final OcrDownloadClient ocrDownloadClient
     ) {
         this.translationsRepository = translationsRepository;
         this.ocrRegisterClient = ocrRegisterClient;
-        this.ocrProgressClient = ocrProgressClient;
+        this.ocrStatusClient = ocrStatusClient;
         this.ocrDownloadClient = ocrDownloadClient;
     }
 
