@@ -32,7 +32,8 @@ public class TranslationService {
     public Long register(final MultipartFile file) {
         final String pdfURI = saveFile(file).replace("file:", "");
         log.info("Saved pdf File in Server. File URI: {}", pdfURI);
-        final Translations translations = translationsRepository.save(Translations.of(pdfURI));
+
+        final Translations translations = translationsRepository.save(Translations.of(pdfURI, file.getOriginalFilename()));
 
         eventPublisher.publishEvent(new OcrRegisterEvent(this, translations));
         log.info("pdf file 저장 이벤트를 발행했습니다!");
