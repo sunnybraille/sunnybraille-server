@@ -18,7 +18,7 @@ import java.io.IOException;
 @Slf4j
 @Profile("!test")
 @Component
-public class MathpixApiOcrDownloadClient implements OcrDownloadClient {
+public class ApiOcrDownloadClient implements OcrDownloadClient {
 
     private static final String APP_URI = "https://api.mathpix.com/v3/pdf/%s.tex";
 
@@ -26,7 +26,7 @@ public class MathpixApiOcrDownloadClient implements OcrDownloadClient {
     private final String appKey;
     private final RestTemplate restTemplate;
 
-    public MathpixApiOcrDownloadClient(
+    public ApiOcrDownloadClient(
             @Value("${mathpix.app-id}") String appId,
             @Value("${mathpix.app-key}") String appKey,
             RestTemplate restTemplate
