@@ -64,4 +64,8 @@ public class Translations {
         this.ocrStatus = dto.getStatus();
         this.ocrPercentDone = dto.getPercentDone();
     }
+
+    public void registerLatexURI(final String ocrLatexFileURI) {
+        this.ocrLatexFileURI = ocrLatexFileURI;
+    }
 }

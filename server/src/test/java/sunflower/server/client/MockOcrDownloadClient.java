@@ -10,7 +10,7 @@ import java.io.File;
 public class MockOcrDownloadClient implements OcrDownloadClient {
 
     @Override
-    public File download(final String pdfId) {
+    public byte[] download(final String pdfId) {
         return new File("");
     }
 }

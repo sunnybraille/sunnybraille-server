@@ -11,10 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 @Slf4j
 @Profile("!test")
 @Component
@@ -38,7 +34,7 @@ public class ApiOcrDownloadClient implements OcrDownloadClient {
     }
 
     @Override
-    public File download(final String pdfId) {
+    public byte[] download(final String pdfId) {
         final String requestURI = String.format(appURI, pdfId);
 
         HttpHeaders requestHeader = createRequestHeader();
@@ -57,17 +53,7 @@ public class ApiOcrDownloadClient implements OcrDownloadClient {
         log.info("Response Status Code: {}", response.getStatusCode());
         log.info("Response Body: {}", response.getBody());
 
-        // TODO: 파일 저장과 클라이언트 호출 분리
-        final File file = new File("src/main/latex/" + pdfId + ".zip");
-
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            fos.write(response.getBody());
-        } catch (IOException e) {
-            log.error("[ERROR] Error occurred while saving file: {}", e.getMessage());
-            throw new RuntimeException("파일을 읽는데 실패함!");
-        }
-
-        return file;
+        return response.getBody();
     }
 
     private HttpHeaders createRequestHeader() {
