@@ -66,6 +66,13 @@ public class ApiOcrStatusClient implements OcrStatusClient {
         }
     }
 
+    private HttpHeaders createRequestHeader() {
+        HttpHeaders requestHeader = new HttpHeaders();
+        requestHeader.set("app_id", appId);
+        requestHeader.set("app_key", appKey);
+        return requestHeader;
+    }
+
     @Deprecated
     @Override
     public boolean isDone(final String pdfId) {
@@ -85,6 +92,7 @@ public class ApiOcrStatusClient implements OcrStatusClient {
         return true;
     }
 
+    @Deprecated
     private ResponseEntity<String> fetchResponse(final String requestURI, final HttpEntity<MultiValueMap<String, Object>> requestEntity) {
         final Instant startTime = Instant.now();
         while (true) {
@@ -111,12 +119,5 @@ public class ApiOcrStatusClient implements OcrStatusClient {
                 throw new RuntimeException("[ERROR] 시간 초과");
             }
         }
-    }
-
-    private HttpHeaders createRequestHeader() {
-        HttpHeaders requestHeader = new HttpHeaders();
-        requestHeader.set("app_id", appId);
-        requestHeader.set("app_key", appKey);
-        return requestHeader;
     }
 }

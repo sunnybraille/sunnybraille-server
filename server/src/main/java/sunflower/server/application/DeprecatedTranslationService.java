@@ -7,8 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sunflower.server.client.OcrDownloadClient;
 import sunflower.server.client.OcrRegisterClient;
 import sunflower.server.client.OcrStatusClient;
-
-import java.io.File;
+import sunflower.server.util.FileUtil;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,8 +29,8 @@ public class DeprecatedTranslationService {
         final boolean isDone = ocrStatusClient.isDone(pdfId);
         log.info("Mathpix API의 OCR 작업이 완료되었습니다. File: {}, pdf id: {}", fileName, pdfId);
 
-        final File latexFile = ocrDownloadClient.download(pdfId);
-        log.info("Latex 파일을 다운로드했습니다. File Name: {}", latexFile.getName());
+        final byte[] latex = ocrDownloadClient.download(pdfId);
+        FileUtil.saveLatexFile(pdfId, latex);
 
         return null;
     }

@@ -13,9 +13,8 @@ import sunflower.server.client.OcrDownloadClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
 
-import java.io.File;
-
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
+import static sunflower.server.util.FileUtil.saveLatexFile;
 
 @Slf4j
 @NoArgsConstructor
@@ -44,6 +43,10 @@ public class OcrDownloadEventListener {
         final Translations translations = translationsRepository.getById(event.getId());
         final String pdfId = translations.getOcrPdfId();
 
-        final File latexFile = ocrDownloadClient.download(pdfId);
+        final byte[] latex = ocrDownloadClient.download(pdfId);
+        final String latexPath = saveLatexFile(pdfId, latex);
+        translations.registerLatexPath(latexPath);
+
+        // TODO: publish event
     }
 }
