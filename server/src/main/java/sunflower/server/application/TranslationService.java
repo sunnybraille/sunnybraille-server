@@ -27,9 +27,9 @@ public class TranslationService {
         final String originalFileName = file.getOriginalFilename();
         final String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
-        final String pdfURI = FileSaveUtil.savePdfFile(file, fileName);
-        final Translations translations = translationsRepository.save(Translations.of(pdfURI, originalFileName));
-        log.info("Saved pdf File in Server. File URI: {}", pdfURI);
+        final String pdfPath = FileSaveUtil.savePdfFile(file, fileName);
+        final Translations translations = translationsRepository.save(Translations.of(pdfPath, originalFileName));
+        log.info("Saved pdf File in Server. File URI: {}", pdfPath);
 
         eventPublisher.publishEvent(new OcrRegisterEvent(this, translations));
         log.info("pdf file 저장 이벤트를 발행했습니다!");

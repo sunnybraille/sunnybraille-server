@@ -25,26 +25,27 @@ public class Translations {
     private Long id;
 
     private String inputFileName;
-    private String pdfURI;
     private String ocrPdfId;
 
     @Enumerated(STRING)
     private OcrStatus ocrStatus;
 
     private Integer ocrPercentDone;
-    private String ocrLatexFileURI;
     private Integer translationPercentDone;
-    private String brfFileURI;
 
-    public static Translations of(final String pdfURI, final String inputFileName) {
+    private String pdfPath;
+    private String latexPath;
+    private String brfPath;
+
+    public static Translations of(final String pdfPath, final String inputFileName) {
         final Translations translations = new Translations();
-        translations.changePdfURI(pdfURI);
+        translations.changePdfPath(pdfPath);
         translations.changeInputFileName(inputFileName);
         return translations;
     }
 
-    private void changePdfURI(final String pdfURI) {
-        this.pdfURI = pdfURI;
+    private void changePdfPath(final String pdfPath) {
+        this.pdfPath = pdfPath;
     }
 
     private void changeInputFileName(final String inputFileName) {
@@ -56,8 +57,8 @@ public class Translations {
         this.ocrStatus = OcrStatus.SPLIT;
     }
 
-    public void registerPdfId(final String pdfId) {
-        this.ocrPdfId = pdfId;
+    public void registerPdfId(final String ocrPdfId) {
+        this.ocrPdfId = ocrPdfId;
     }
 
     public void changeOcrStatus(final OcrStatusDto dto) {
@@ -65,7 +66,7 @@ public class Translations {
         this.ocrPercentDone = dto.getPercentDone();
     }
 
-    public void registerLatexURI(final String ocrLatexFileURI) {
-        this.ocrLatexFileURI = ocrLatexFileURI;
+    public void registerLatexPath(final String latexPath) {
+        this.latexPath = latexPath;
     }
 }

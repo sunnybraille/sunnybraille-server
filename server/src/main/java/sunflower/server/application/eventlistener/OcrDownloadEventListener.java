@@ -43,9 +43,9 @@ public class OcrDownloadEventListener {
         final Translations translations = translationsRepository.getById(event.getId());
         final String pdfId = translations.getOcrPdfId();
 
-        final byte[] latexFile = ocrDownloadClient.download(pdfId);
-        final String latexFilePath = saveLatexFile(pdfId, latexFile);
-        translations.registerLatexURI(latexFilePath);
+        final byte[] latex = ocrDownloadClient.download(pdfId);
+        final String latexPath = saveLatexFile(pdfId, latex);
+        translations.registerLatexPath(latexPath);
 
         // TODO: publish event
     }
