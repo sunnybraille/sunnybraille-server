@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +15,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import sunflower.server.util.FileSaveUtil;
 
 import java.io.File;
 import java.util.Arrays;
@@ -87,7 +87,7 @@ public class ApiOcrRegisterClient implements OcrRegisterClient {
     @Deprecated
     private MultiValueMap<String, Object> createRequestBody(final MultipartFile file) {
         MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
-        requestBody.add("file", file.getResource());
+        requestBody.add("file", FileSaveUtil.convertToFileSystemResource(file));
 
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("conversion_formats", Map.of("docx", true, "tex.zip", true));
@@ -136,7 +136,7 @@ public class ApiOcrRegisterClient implements OcrRegisterClient {
 
     private MultiValueMap<String, Object> createRequestBody(final File file) {
         MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
-        requestBody.add("file", new FileSystemResource(file));
+        requestBody.add("file", FileSaveUtil.convertToFileSystemResource(file));
 
         Map<String, Object> bodyMap = new HashMap<>();
         bodyMap.put("conversion_formats", Map.of("docx", true, "tex.zip", true));
