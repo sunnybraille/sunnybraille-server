@@ -19,7 +19,7 @@ public final class FileUtil {
         try {
             Files.copy(file.getInputStream(), path);
             Resource resource = new FileSystemResource(path.toFile());
-            return resource.getURI().getPath();
+            return resource.getFile().getPath();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
