@@ -14,7 +14,7 @@ import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
-import static sunflower.server.util.FileSaveUtil.saveLatexFile;
+import static sunflower.server.util.FileUtil.saveLatexFile;
 
 @Slf4j
 @NoArgsConstructor

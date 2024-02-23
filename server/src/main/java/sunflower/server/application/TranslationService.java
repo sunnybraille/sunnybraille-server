@@ -10,7 +10,7 @@ import sunflower.server.application.dto.TranslationStatusDto;
 import sunflower.server.application.event.OcrRegisterEvent;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
-import sunflower.server.util.FileSaveUtil;
+import sunflower.server.util.FileUtil;
 
 import java.util.UUID;
 
@@ -27,7 +27,7 @@ public class TranslationService {
         final String originalFileName = file.getOriginalFilename();
         final String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
-        final String pdfPath = FileSaveUtil.savePdfFile(file, fileName);
+        final String pdfPath = FileUtil.savePdfFile(file, fileName);
         final Translations translations = translationsRepository.save(Translations.of(pdfPath, originalFileName));
         log.info("Saved pdf File in Server. File URI: {}", pdfPath);
 

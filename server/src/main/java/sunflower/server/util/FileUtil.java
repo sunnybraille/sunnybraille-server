@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public final class FileSaveUtil {
+public final class FileUtil {
 
     public static String savePdfFile(final MultipartFile file, String fileName) {
         final Path path = Paths.get("src", "main", "pdf", fileName);
