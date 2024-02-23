@@ -29,10 +29,11 @@ public class TranslationService {
 
     @Transactional
     public Long register(final MultipartFile file) {
-        final String pdfURI = saveFile(file);
-        log.info("Saved pdf File in Server. File URI: {}", pdfURI);
+        final String pdfURI = saveFile(file, UUID.randomUUID() + "_" + file.getOriginalFilename());
 
-        final Translations translations = translationsRepository.save(Translations.of(pdfURI, file.getOriginalFilename()));
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        final Translations translations = translationsRepository.save(Translations.of(pdfURI, fileName));
+        log.info("Saved pdf File in Server. File URI: {}", pdfURI);
 
         eventPublisher.publishEvent(new OcrRegisterEvent(this, translations));
         log.info("pdf file 저장 이벤트를 발행했습니다!");
@@ -41,8 +42,7 @@ public class TranslationService {
         return translations.getId();
     }
 
-    private String saveFile(final MultipartFile file) {
-        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+    private String saveFile(final MultipartFile file, String fileName) {
         final Path path = Paths.get("src", "main", "pdf", fileName);
 
         try {
