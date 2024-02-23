@@ -3,8 +3,8 @@ package sunflower.server.application;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,12 +25,11 @@ import java.util.UUID;
 public class TranslationService {
 
     private final TranslationsRepository translationsRepository;
-    private final ResourceLoader resourceLoader;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public Long register(final MultipartFile file) {
-        final String pdfURI = saveFile(file).replace("file:", "");
+        final String pdfURI = saveFile(file);
         log.info("Saved pdf File in Server. File URI: {}", pdfURI);
 
         final Translations translations = translationsRepository.save(Translations.of(pdfURI, file.getOriginalFilename()));
@@ -48,8 +47,8 @@ public class TranslationService {
 
         try {
             Files.copy(file.getInputStream(), path);
-            final Resource resource = resourceLoader.getResource("file:" + path); // TODO: なんで「ファイル」だって
-            return resource.getURI().toString();
+            Resource resource = new FileSystemResource(path.toFile());
+            return resource.getURI().getPath();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
