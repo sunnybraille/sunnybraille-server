@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 import sunflower.server.application.event.OcrDownloadEvent;
+import sunflower.server.application.event.TranslateEvent;
 import sunflower.server.client.OcrDownloadClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
@@ -47,6 +48,6 @@ public class OcrDownloadEventListener {
         final String latexPath = saveLatexFile(pdfId, latex);
         translations.registerLatexPath(latexPath);
 
-        // TODO: publish event
+        eventPublisher.publishEvent(new TranslateEvent(this, event.getId()));
     }
 }
