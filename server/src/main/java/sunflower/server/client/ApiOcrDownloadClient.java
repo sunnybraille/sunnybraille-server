@@ -57,6 +57,7 @@ public class ApiOcrDownloadClient implements OcrDownloadClient {
         log.info("Response Status Code: {}", response.getStatusCode());
         log.info("Response Body: {}", response.getBody());
 
+        // TODO: 파일 저장과 클라이언트 호출 분리
         final File file = new File("src/main/latex/" + pdfId + ".zip");
 
         try (FileOutputStream fos = new FileOutputStream(file)) {
