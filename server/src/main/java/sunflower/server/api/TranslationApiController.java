@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import sunflower.server.api.response.BrfFileQueryResponse;
 import sunflower.server.api.response.TranslationStatusResponse;
 import sunflower.server.application.TranslationService;
 import sunflower.server.application.dto.TranslationStatusDto;
@@ -43,8 +44,10 @@ public class TranslationApiController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Void> downloadBrfFile(@PathVariable("id") Long id) {
-        return null;
+    public ResponseEntity<BrfFileQueryResponse> queryBrfFile(@PathVariable("id") Long id) {
+        final String brfContent = translationService.findBrfFileById(id);
+        final BrfFileQueryResponse response = BrfFileQueryResponse.from(id, brfContent);
+        return ResponseEntity.ok(response);
     }
 }
 
