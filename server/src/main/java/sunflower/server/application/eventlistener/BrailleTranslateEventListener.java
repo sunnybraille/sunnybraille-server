@@ -9,46 +9,48 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 import sunflower.server.application.event.BrailleTranslateEvent;
-import sunflower.server.application.event.OcrDownloadEvent;
-import sunflower.server.client.OcrDownloadClient;
+import sunflower.server.client.ApiBrailleTranslationClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
 
+import java.io.File;
+import java.nio.file.Paths;
+
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
-import static sunflower.server.util.FileUtil.saveLatexFile;
 
 @Slf4j
 @NoArgsConstructor
 @Component
-public class OcrDownloadEventListener {
+public class BrailleTranslateEventListener {
 
     private TranslationsRepository translationsRepository;
-    private OcrDownloadClient ocrDownloadClient;
+    private ApiBrailleTranslationClient apiBrailleTranslationClient;
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public OcrDownloadEventListener(
+    public BrailleTranslateEventListener(
             final TranslationsRepository translationsRepository,
-            final OcrDownloadClient ocrDownloadClient,
+            final ApiBrailleTranslationClient apiBrailleTranslationClient,
             final ApplicationEventPublisher eventPublisher
     ) {
         this.translationsRepository = translationsRepository;
-        this.ocrDownloadClient = ocrDownloadClient;
+        this.apiBrailleTranslationClient = apiBrailleTranslationClient;
         this.eventPublisher = eventPublisher;
     }
 
     @Async
     @TransactionalEventListener
     @Transactional(propagation = REQUIRES_NEW)
-    public void downloadLatexFile(final OcrDownloadEvent event) {
+    public void downloadLatexFile(final BrailleTranslateEvent event) {
         final Translations translations = translationsRepository.getById(event.getId());
-        final String pdfId = translations.getOcrPdfId();
 
-        final byte[] latex = ocrDownloadClient.download(pdfId);
-        final String latexPath = saveLatexFile(pdfId, latex);
-        log.info("Latex File 저장! 경로: {}", latexPath);
-        translations.registerLatexPath(latexPath);
+        final String latexPath = translations.getLatexPath();
+        final File latexFile = Paths.get(latexPath).toFile();
 
-        eventPublisher.publishEvent(new BrailleTranslateEvent(this, event.getId()));
+        if (!latexFile.exists()) {
+            throw new RuntimeException("파일이 존재하지 않습니다!");
+        }
+
+        final File brfFile = apiBrailleTranslationClient.translate(latexFile);
     }
 }
