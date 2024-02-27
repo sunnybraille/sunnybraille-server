@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 import sunflower.server.application.event.BrailleTranslateEvent;
-import sunflower.server.client.ApiBrailleTranslationClient;
+import sunflower.server.client.BrailleTranslationClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
 
@@ -27,17 +27,17 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRES_NE
 public class BrailleTranslateEventListener {
 
     private TranslationsRepository translationsRepository;
-    private ApiBrailleTranslationClient apiBrailleTranslationClient;
+    private BrailleTranslationClient brailleTranslationClient;
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
     public BrailleTranslateEventListener(
             final TranslationsRepository translationsRepository,
-            final ApiBrailleTranslationClient apiBrailleTranslationClient,
+            final BrailleTranslationClient brailleTranslationClient,
             final ApplicationEventPublisher eventPublisher
     ) {
         this.translationsRepository = translationsRepository;
-        this.apiBrailleTranslationClient = apiBrailleTranslationClient;
+        this.brailleTranslationClient = brailleTranslationClient;
         this.eventPublisher = eventPublisher;
     }
 
@@ -54,7 +54,7 @@ public class BrailleTranslateEventListener {
             throw new RuntimeException("파일이 존재하지 않습니다!");
         }
 
-        final String brfContent = apiBrailleTranslationClient.translate(latexFile);
+        final String brfContent = brailleTranslationClient.translate(latexFile);
         final String brfPath = saveBrfFile(brfContent, translations.getOcrPdfId());
 
         translations.registerBrfPath(brfPath);
