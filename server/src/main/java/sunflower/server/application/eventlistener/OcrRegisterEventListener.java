@@ -54,6 +54,6 @@ public class OcrRegisterEventListener {
         final String pdfId = ocrRegisterClient.requestPdfId(file);
         translations.registerPdfId(pdfId);
 
-        eventPublisher.publishEvent(new OcrStatusEvent(this, id, pdfId));
+        eventPublisher.publishEvent(new OcrStatusEvent(this, id));
     }
 }

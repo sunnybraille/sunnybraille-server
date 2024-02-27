@@ -48,7 +48,7 @@ public class OcrStatusEventListener {
         final Long id = event.getId();
         final Translations translations = translationsRepository.getById(id);
 
-        final String pdfId = event.getPdfId();
+        final String pdfId = translations.getOcrPdfId();
         final OcrStatusDto status = ocrStatusClient.checkStatus(pdfId);
         translations.changeOcrStatus(status);
 
@@ -63,6 +63,6 @@ public class OcrStatusEventListener {
     @Scheduled(fixedDelay = 1000)
     private void retryCheckOcrStatus(final Long id, final String pdfId) {
         log.info("Cheking OCR status for translations id: {}, pdf id: {}", id, pdfId);
-        eventPublisher.publishEvent(new OcrStatusEvent(this, id, pdfId));
+        eventPublisher.publishEvent(new OcrStatusEvent(this, id));
     }
 }

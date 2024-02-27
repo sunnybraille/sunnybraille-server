@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
+import sunflower.server.application.event.BrailleTranslateEvent;
 import sunflower.server.application.event.OcrDownloadEvent;
 import sunflower.server.client.OcrDownloadClient;
 import sunflower.server.entity.Translations;
@@ -45,8 +46,9 @@ public class OcrDownloadEventListener {
 
         final byte[] latex = ocrDownloadClient.download(pdfId);
         final String latexPath = saveLatexFile(pdfId, latex);
+        log.info("Latex File 저장! 경로: {}", latexPath);
         translations.registerLatexPath(latexPath);
 
-        // TODO: publish event
+        eventPublisher.publishEvent(new BrailleTranslateEvent(this, event.getId()));
     }
 }

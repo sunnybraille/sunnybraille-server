@@ -39,9 +39,15 @@ public class Translations {
 
     public static Translations of(final String pdfPath, final String inputFileName) {
         final Translations translations = new Translations();
+        translations.start();
         translations.changePdfPath(pdfPath);
         translations.changeInputFileName(inputFileName);
         return translations;
+    }
+
+    private void start() {
+        this.ocrPercentDone = 0;
+        this.translationPercentDone = 0;
     }
 
     private void changePdfPath(final String pdfPath) {
@@ -68,5 +74,9 @@ public class Translations {
 
     public void registerLatexPath(final String latexPath) {
         this.latexPath = latexPath;
+    }
+
+    public void registerBrfPath(final String brfPath) {
+        this.brfPath = brfPath;
     }
 }

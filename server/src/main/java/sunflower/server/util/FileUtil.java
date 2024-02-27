@@ -1,17 +1,23 @@
 package sunflower.server.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
+@Slf4j
 public final class FileUtil {
+
+    private static final String BASE_PATH = "src/main/latex/";
 
     public static String savePdfFile(final MultipartFile file, String fileName) {
         final Path path = Paths.get("src", "main", "pdf", fileName);
@@ -19,7 +25,7 @@ public final class FileUtil {
         try {
             Files.copy(file.getInputStream(), path);
             Resource resource = new FileSystemResource(path.toFile());
-            return resource.getURI().getPath();
+            return resource.getFile().getPath();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -34,13 +40,21 @@ public final class FileUtil {
     }
 
     public static String saveLatexFile(final String pdfId, byte[] content) {
-        final File file = new File("src/main/latex/" + pdfId + ".zip");
+        String path = BASE_PATH + pdfId + ".tex";
 
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            fos.write(content);
+        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(content))) {
+            ZipEntry entry;
+            while ((entry = zipInputStream.getNextEntry()) != null) {
+                if (!entry.isDirectory()) {
+                    Files.copy(zipInputStream, Paths.get(path));
+                    break;
+                }
+            }
         } catch (IOException e) {
-            throw new RuntimeException("파일을 읽는데 실패함!");
+            log.error("Error extracting file from zip: {}", e.getMessage());
+            throw new RuntimeException(e);
         }
-        return file.getPath();
+
+        return path;
     }
 }

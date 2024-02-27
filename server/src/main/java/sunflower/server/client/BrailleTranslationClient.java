@@ -4,5 +4,5 @@ import java.io.File;
 
 public interface BrailleTranslationClient {
 
-    File translate(final Long id);
+    String translate(File file);
 }
