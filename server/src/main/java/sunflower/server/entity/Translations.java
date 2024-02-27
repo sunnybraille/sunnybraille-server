@@ -75,4 +75,8 @@ public class Translations {
     public void registerLatexPath(final String latexPath) {
         this.latexPath = latexPath;
     }
+
+    public void registerBrfPath(final String brfPath) {
+        this.brfPath = brfPath;
+    }
 }

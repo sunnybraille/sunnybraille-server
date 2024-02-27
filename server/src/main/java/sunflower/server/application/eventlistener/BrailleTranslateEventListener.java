@@ -14,6 +14,9 @@ import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
@@ -51,6 +54,27 @@ public class BrailleTranslateEventListener {
             throw new RuntimeException("파일이 존재하지 않습니다!");
         }
 
-        final File brfFile = apiBrailleTranslationClient.translate(latexFile);
+        final String brfContent = apiBrailleTranslationClient.translate(latexFile);
+        final String brfPath = saveBrfFile(brfContent, translations.getOcrPdfId());
+
+        translations.registerBrfPath(brfPath);
+    }
+
+    private String saveBrfFile(final String content, final String ocrPdfId) {
+        final String directory = "src/main/brf";
+
+        final String fileName = ocrPdfId + ".brf";
+        final Path brfPath = Paths.get(directory, fileName);
+
+        final File file = brfPath.toFile();
+        try {
+            final FileWriter writer = new FileWriter(file);
+            writer.write(content);
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return brfPath.toString();
     }
 }

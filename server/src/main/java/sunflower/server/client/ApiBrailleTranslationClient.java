@@ -36,7 +36,7 @@ public class ApiBrailleTranslationClient implements BrailleTranslationClient {
     }
 
     @Override
-    public File translate(final File file) {
+    public String translate(final File file) {
         final HttpHeaders requestHeader = createRequestHeader();
         MultiValueMap<String, Object> requestBody = createRequestBody(file);
         final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);
@@ -49,7 +49,7 @@ public class ApiBrailleTranslationClient implements BrailleTranslationClient {
 
         log.info("Response Body: {}", response.getBody());
 
-        return null;
+        return response.getBody();
     }
 
     private HttpHeaders createRequestHeader() {
