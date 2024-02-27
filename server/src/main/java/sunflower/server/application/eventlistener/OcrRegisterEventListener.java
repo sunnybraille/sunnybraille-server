@@ -47,8 +47,8 @@ public class OcrRegisterEventListener {
 
         final Long id = event.getTranslations().getId();
         final Translations translations = translationsRepository.getById(id);
-        final String pdfURI = translations.getPdfPath();
-        final File file = Paths.get(pdfURI).toFile();
+        final String pdfPath = translations.getPdfPath();
+        final File file = Paths.get(pdfPath).toFile();
 
         translations.startOcr();
         final String pdfId = ocrRegisterClient.requestPdfId(file);

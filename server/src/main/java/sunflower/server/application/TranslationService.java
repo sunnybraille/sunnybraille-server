@@ -12,6 +12,10 @@ import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
 import sunflower.server.util.FileUtil;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Slf4j
@@ -41,5 +45,17 @@ public class TranslationService {
     @Transactional
     public TranslationStatusDto status(final Long id) {
         return TranslationStatusDto.from(translationsRepository.getById(id));
+    }
+
+    public String findBrfFileById(final Long id) {
+        final Translations translations = translationsRepository.getById(id);
+        final String brfPath = translations.getBrfPath();
+        final File file = Paths.get(brfPath).toFile();
+
+        try {
+            return new String(Files.readAllBytes(Paths.get(file.getPath())));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
