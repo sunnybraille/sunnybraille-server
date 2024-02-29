@@ -16,6 +16,7 @@ import sunflower.server.repository.TranslationsRepository;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -61,8 +62,16 @@ public class BrailleTranslateEventListener {
     }
 
     private String saveBrfFile(final String content, final String ocrPdfId) {
-        final String directory = "src/main/brf";
+        final Path directoryPath = Paths.get("src", "main", "brf");
+        if (!Files.exists(directoryPath)) {
+            try {
+                Files.createDirectories(directoryPath);
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to create directory: " + directoryPath, e);
+            }
+        }
 
+        final String directory = "src/main/brf";
         final String fileName = ocrPdfId + ".brf";
         final Path brfPath = Paths.get(directory, fileName);
 

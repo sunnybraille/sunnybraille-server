@@ -17,9 +17,16 @@ import java.util.zip.ZipInputStream;
 @Slf4j
 public final class FileUtil {
 
-    private static final String BASE_PATH = "src/main/latex/";
-
     public static String savePdfFile(final MultipartFile file, String fileName) {
+        final Path directoryPath = Paths.get("src", "main", "pdf");
+        if (!Files.exists(directoryPath)) {
+            try {
+                Files.createDirectories(directoryPath);
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to create directory: " + directoryPath, e);
+            }
+        }
+
         final Path path = Paths.get("src", "main", "pdf", fileName);
 
         try {
@@ -40,7 +47,16 @@ public final class FileUtil {
     }
 
     public static String saveLatexFile(final String pdfId, byte[] content) {
-        String path = BASE_PATH + pdfId + ".tex";
+        final Path directoryPath = Paths.get("src", "main", "latex");
+        if (!Files.exists(directoryPath)) {
+            try {
+                Files.createDirectories(directoryPath);
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to create directory: " + directoryPath, e);
+            }
+        }
+
+        String path = "src/main/latex/" + pdfId + ".tex";
 
         try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(content))) {
             ZipEntry entry;
