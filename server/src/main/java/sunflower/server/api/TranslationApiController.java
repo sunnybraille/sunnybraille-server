@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import sunflower.server.api.response.BrfFileQueryResponse;
+import sunflower.server.api.response.PdfRegisterResponse;
 import sunflower.server.api.response.TranslationStatusResponse;
 import sunflower.server.application.TranslationService;
 import sunflower.server.application.dto.TranslationStatusDto;
@@ -43,7 +44,7 @@ public class TranslationApiController {
                     required = true
             ))
     @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> registerPdf(
+    public ResponseEntity<PdfRegisterResponse> registerPdf(
             @Parameter(name = "file", description = "점역할 pdf 파일", required = true,
                     example = "쎈_3124번.pdf", schema = @Schema(type = "file"))
             @RequestPart("file") MultipartFile file
@@ -56,7 +57,7 @@ public class TranslationApiController {
 
         return ResponseEntity
                 .created(URI.create("/translations/" + id))
-                .build();
+                .body(PdfRegisterResponse.from(file.getOriginalFilename()));
     }
 
     @Operation(summary = "점역 상황 체크 API", description = "id와 함께 요청하면 점역 진행 상황을 반환하며, 클라이언트의 progress bar 표시를 위해 사용해 주세요.")
