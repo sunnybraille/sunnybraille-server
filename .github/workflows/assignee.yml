@@ -1,0 +1,25 @@
+name: Auto-assignee
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign to creator
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue || context.payload.pull_request;
+            const creator = issue.user.login;
+            const issue_number = issue.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            console.log(`Assigning issue #${issue_number} to ${creator}`);
+            await github.issues.addAssignees({ owner, repo, issue_number, assignees: [creator] });
