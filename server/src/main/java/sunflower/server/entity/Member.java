@@ -25,6 +25,14 @@ public class Member {
     private String encryptedPassword;
     private Boolean isBlind;
 
+    public Member(final String loginId, final String encryptedPassword) {
+        new Member(null, null, loginId, encryptedPassword, null);
+    }
+
+    public static Member of(final String loginId, final String password) {
+        return new Member(loginId, PasswordUtil.encrypt(password));
+    }
+
     public void checkPassword(final String password) {
         final String encryptedPassword = PasswordUtil.encrypt(password);
         if (!this.encryptedPassword.equals(encryptedPassword)) {
