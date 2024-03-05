@@ -76,7 +76,8 @@ public class Translations {
         this.latexPath = latexPath;
     }
 
-    public void registerBrfPath(final String brfPath) {
+    public void finishTransbraille(final String brfPath) {
         this.brfPath = brfPath;
+        this.ocrPercentDone = 100;
     }
 }
