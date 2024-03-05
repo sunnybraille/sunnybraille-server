@@ -4,3 +4,6 @@ spring:
 
 client:
   uri: secret-ip
+
+jwt:
+  secret-key: 941453f7ce7eeb97f973650b44ea3c03acfada40978661ee7820716d7136a6232cdb83e4cd740bc284486059fdb7db0f6b573de04697bb753c7e6bf19f93cd72
