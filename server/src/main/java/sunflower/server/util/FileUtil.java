@@ -19,8 +19,7 @@ import java.util.zip.ZipInputStream;
 @Slf4j
 public final class FileUtil {
 
-    public static String savePdfFile(final MultipartFile file, String fileName) {
-        final Path directoryPath = Paths.get("src", "main", "pdf");
+    public static String saveFile(final MultipartFile file, final String fileName, final Path directoryPath) {
         if (!Files.exists(directoryPath)) {
             try {
                 Files.createDirectories(directoryPath);
@@ -29,28 +28,12 @@ public final class FileUtil {
             }
         }
 
-        final Path path = Paths.get("src", "main", "pdf", fileName);
+        final Path path = Paths.get(String.valueOf(directoryPath), fileName);
 
         try {
             Files.copy(file.getInputStream(), path);
             Resource resource = new FileSystemResource(path.toFile());
             return resource.getFile().getPath();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static String randomFileName(final MultipartFile file) {
-        return UUID.randomUUID() + "_" + file.getOriginalFilename();
-    }
-
-    public static File findFile(String path) {
-        return Paths.get(path).toFile();
-    }
-
-    public static String readFile(final File file) {
-        try {
-            return new String(Files.readAllBytes(Paths.get(file.getPath())));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -82,6 +65,22 @@ public final class FileUtil {
         }
 
         return path;
+    }
+
+    public static String randomFileName(final MultipartFile file) {
+        return UUID.randomUUID() + "_" + file.getOriginalFilename();
+    }
+
+    public static File findFile(String path) {
+        return Paths.get(path).toFile();
+    }
+
+    public static String readFile(final File file) {
+        try {
+            return new String(Files.readAllBytes(Paths.get(file.getPath())));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static String saveBrfFile(final String content, final String ocrPdfId) {

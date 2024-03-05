@@ -13,9 +13,9 @@ import sunflower.server.application.event.OcrDownloadEvent;
 import sunflower.server.client.OcrDownloadClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
+import sunflower.server.util.FileUtil;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
-import static sunflower.server.util.FileUtil.saveLatexFile;
 
 @Slf4j
 @NoArgsConstructor
@@ -45,7 +45,7 @@ public class OcrDownloadEventListener {
         final String pdfId = translations.getOcrPdfId();
 
         final byte[] latex = ocrDownloadClient.download(pdfId);
-        final String latexPath = saveLatexFile(pdfId, latex);
+        final String latexPath = FileUtil.saveLatexFile(pdfId, latex);
         log.info("Latex File 저장! 경로: {}", latexPath);
         translations.registerLatexPath(latexPath);
 

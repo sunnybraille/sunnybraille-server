@@ -13,6 +13,7 @@ import sunflower.server.repository.TranslationsRepository;
 import sunflower.server.util.FileUtil;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class TranslationService {
         final String originalFileName = file.getOriginalFilename();
         final String fileName = FileUtil.randomFileName(file);
 
-        final String pdfPath = FileUtil.savePdfFile(file, fileName);
+        final String pdfPath = FileUtil.saveFile(file, fileName, Paths.get("src", "main", "pdf"));
         final Translations translations = translationsRepository.save(Translations.of(pdfPath, originalFileName));
         log.info("Saved pdf File in Server. File URI: {}", pdfPath);
 
