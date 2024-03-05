@@ -1,24 +1,23 @@
 package sunflower.server.util;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 @Slf4j
 public final class FileUtil {
 
-    public static String savePdfFile(final MultipartFile file, String fileName) {
-        final Path directoryPath = Paths.get("src", "main", "pdf");
+    public static String saveFile(Object file, String fileName, Path directoryPath) {
         if (!Files.exists(directoryPath)) {
             try {
                 Files.createDirectories(directoryPath);
@@ -27,50 +26,71 @@ public final class FileUtil {
             }
         }
 
-        final Path path = Paths.get("src", "main", "pdf", fileName);
+        Path path;
+        if (file instanceof MultipartFile) {
+            path = saveMultipartFile((MultipartFile) file, fileName, directoryPath);
+        } else if (file instanceof String) {
+            path = saveStringContent((String) file, fileName, directoryPath);
+        } else if (file instanceof byte[]) {
+            path = saveZipFile((byte[]) file, fileName, directoryPath);
+        } else {
+            throw new IllegalArgumentException("Unsupported file type");
+        }
 
+        return path.toString();
+    }
+
+    private static Path saveMultipartFile(MultipartFile file, String fileName, Path directoryPath) {
         try {
-            Files.copy(file.getInputStream(), path);
-            Resource resource = new FileSystemResource(path.toFile());
-            return resource.getFile().getPath();
+            Path filePath = Paths.get(directoryPath.toString(), fileName);
+            Files.copy(file.getInputStream(), filePath);
+            return filePath;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static FileSystemResource convertToFileSystemResource(final MultipartFile file) {
-        return (FileSystemResource) file.getResource();
-    }
-
-    public static FileSystemResource convertToFileSystemResource(final File file) {
-        return new FileSystemResource(file);
-    }
-
-    public static String saveLatexFile(final String pdfId, byte[] content) {
-        final Path directoryPath = Paths.get("src", "main", "latex");
-        if (!Files.exists(directoryPath)) {
-            try {
-                Files.createDirectories(directoryPath);
-            } catch (IOException e) {
-                throw new RuntimeException("Unable to create directory: " + directoryPath, e);
-            }
+    private static Path saveStringContent(String content, String fileName, Path directoryPath) {
+        Path filePath = Paths.get(directoryPath.toString(), fileName);
+        try (FileWriter writer = new FileWriter(filePath.toFile())) {
+            writer.write(content);
+            return filePath;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+    }
 
-        String path = "src/main/latex/" + pdfId + ".tex";
-
-        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(content))) {
-            ZipEntry entry;
-            while ((entry = zipInputStream.getNextEntry()) != null) {
-                if (!entry.isDirectory()) {
-                    Files.copy(zipInputStream, Paths.get(path));
-                    break;
+    private static Path saveZipFile(byte[] content, String fileName, Path directoryPath) {
+        try {
+            String path = "src/main/latex/" + fileName + ".tex";
+            try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(content))) {
+                ZipEntry entry;
+                while ((entry = zipInputStream.getNextEntry()) != null) {
+                    if (!entry.isDirectory()) {
+                        Files.copy(zipInputStream, Paths.get(path));
+                        break;
+                    }
                 }
             }
+            return Paths.get(path);
         } catch (IOException e) {
-            log.error("Error extracting file from zip: {}", e.getMessage());
             throw new RuntimeException(e);
         }
+    }
 
-        return path;
+    public static String createRandomFileName(final MultipartFile file) {
+        return UUID.randomUUID() + "_" + file.getOriginalFilename();
+    }
+
+    public static File findFile(String path) {
+        return Paths.get(path).toFile();
+    }
+
+    public static String readFile(final File file) {
+        try {
+            return new String(Files.readAllBytes(Paths.get(file.getPath())));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
