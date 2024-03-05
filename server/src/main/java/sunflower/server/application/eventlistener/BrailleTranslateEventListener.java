@@ -10,6 +10,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import sunflower.server.application.event.BrailleTranslateEvent;
 import sunflower.server.client.BrailleTranslationClient;
 import sunflower.server.entity.Translations;
+import sunflower.server.exception.FileException;
 import sunflower.server.repository.TranslationsRepository;
 import sunflower.server.util.FileUtil;
 
@@ -44,7 +45,7 @@ public class BrailleTranslateEventListener {
         final File latexFile = FileUtil.findFile(translations.getLatexPath());
 
         if (!latexFile.exists()) {
-            throw new RuntimeException("파일이 존재하지 않습니다!");
+            throw new FileException("파일이 존재하지 않습니다!");
         }
 
         final String brfContent = brailleTranslationClient.translate(latexFile);
