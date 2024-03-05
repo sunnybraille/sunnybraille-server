@@ -14,6 +14,7 @@ import sunflower.server.repository.TranslationsRepository;
 import sunflower.server.util.FileUtil;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
@@ -47,7 +48,7 @@ public class BrailleTranslateEventListener {
         }
 
         final String brfContent = brailleTranslationClient.translate(latexFile);
-        final String brfPath = FileUtil.saveBrfFile(brfContent, translations.getOcrPdfId());
+        final String brfPath = FileUtil.saveFile(brfContent, translations.getOcrPdfId(), Paths.get("src", "main", "brf"));
 
         translations.finishTransbraille(brfPath);
     }

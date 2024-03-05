@@ -26,7 +26,7 @@ public class TranslationService {
     @Transactional
     public Long register(final MultipartFile file) {
         final String originalFileName = file.getOriginalFilename();
-        final String fileName = FileUtil.randomFileName(file);
+        final String fileName = FileUtil.createRandomFileName(file);
 
         final String pdfPath = FileUtil.saveFile(file, fileName, Paths.get("src", "main", "pdf"));
         final Translations translations = translationsRepository.save(Translations.of(pdfPath, originalFileName));

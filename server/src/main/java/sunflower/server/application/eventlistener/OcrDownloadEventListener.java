@@ -47,7 +47,7 @@ public class OcrDownloadEventListener {
         final String pdfId = translations.getOcrPdfId();
 
         final byte[] latex = ocrDownloadClient.download(pdfId);
-        final String latexPath = FileUtil.saveZipFile(pdfId, latex, Paths.get("src", "main", "latex"));
+        final String latexPath = FileUtil.saveFile(latex, pdfId, Paths.get("src", "main", "latex"));
         log.info("Latex File 저장! 경로: {}", latexPath);
         translations.registerLatexPath(latexPath);
 
