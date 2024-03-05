@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import sunflower.server.application.dto.BrfFileDto;
 import sunflower.server.application.dto.TranslationStatusDto;
 import sunflower.server.application.event.OcrRegisterEvent;
 import sunflower.server.entity.Translations;
@@ -44,10 +45,11 @@ public class TranslationService {
         return TranslationStatusDto.from(translationsRepository.getById(id));
     }
 
-    public String findBrfFileById(final Long id) {
+    public BrfFileDto findBrfFileById(final Long id) {
         final Translations translations = translationsRepository.getById(id);
         final File file = FileUtil.findFile(translations.getBrfPath());
 
-        return FileUtil.readFile(file);
+        final String content = FileUtil.readFile(file);
+        return BrfFileDto.of(translations, content);
     }
 }
