@@ -12,12 +12,9 @@ import sunflower.server.application.event.BrailleTranslateEvent;
 import sunflower.server.client.BrailleTranslationClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
+import sunflower.server.util.FileUtil;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
@@ -29,7 +26,6 @@ public class BrailleTranslateEventListener {
 
     private TranslationsRepository translationsRepository;
     private BrailleTranslationClient brailleTranslationClient;
-    private ApplicationEventPublisher eventPublisher;
 
     @Autowired
     public BrailleTranslateEventListener(
@@ -39,7 +35,6 @@ public class BrailleTranslateEventListener {
     ) {
         this.translationsRepository = translationsRepository;
         this.brailleTranslationClient = brailleTranslationClient;
-        this.eventPublisher = eventPublisher;
     }
 
     @Async
@@ -56,34 +51,8 @@ public class BrailleTranslateEventListener {
         }
 
         final String brfContent = brailleTranslationClient.translate(latexFile);
-        final String brfPath = saveBrfFile(brfContent, translations.getOcrPdfId());
+        final String brfPath = FileUtil.saveBrfFile(brfContent, translations.getOcrPdfId());
 
         translations.finishTransbraille(brfPath);
-    }
-
-    private String saveBrfFile(final String content, final String ocrPdfId) {
-        final Path directoryPath = Paths.get("src", "main", "brf");
-        if (!Files.exists(directoryPath)) {
-            try {
-                Files.createDirectories(directoryPath);
-            } catch (IOException e) {
-                throw new RuntimeException("Unable to create directory: " + directoryPath, e);
-            }
-        }
-
-        final String directory = "src/main/brf";
-        final String fileName = ocrPdfId + ".brf";
-        final Path brfPath = Paths.get(directory, fileName);
-
-        final File file = brfPath.toFile();
-        try {
-            final FileWriter writer = new FileWriter(file);
-            writer.write(content);
-            writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return brfPath.toString();
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -72,5 +73,31 @@ public final class FileUtil {
         }
 
         return path;
+    }
+
+    public static String saveBrfFile(final String content, final String ocrPdfId) {
+        final Path directoryPath = Paths.get("src", "main", "brf");
+        if (!Files.exists(directoryPath)) {
+            try {
+                Files.createDirectories(directoryPath);
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to create directory: " + directoryPath, e);
+            }
+        }
+
+        final String directory = "src/main/brf";
+        final String fileName = ocrPdfId + ".brf";
+        final Path brfPath = Paths.get(directory, fileName);
+
+        final File file = brfPath.toFile();
+        try {
+            final FileWriter writer = new FileWriter(file);
+            writer.write(content);
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return brfPath.toString();
     }
 }
