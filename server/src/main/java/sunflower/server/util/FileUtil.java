@@ -39,8 +39,7 @@ public final class FileUtil {
         }
     }
 
-    public static String saveLatexFile(final String pdfId, byte[] content) {
-        final Path directoryPath = Paths.get("src", "main", "latex");
+    public static String saveZipFile(final String pdfId, byte[] content, Path directoryPath) {
         if (!Files.exists(directoryPath)) {
             try {
                 Files.createDirectories(directoryPath);
