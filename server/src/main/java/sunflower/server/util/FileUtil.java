@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -39,12 +40,20 @@ public final class FileUtil {
         }
     }
 
-    public static FileSystemResource convertToFileSystemResource(final MultipartFile file) {
-        return (FileSystemResource) file.getResource();
+    public static String randomFileName(final MultipartFile file) {
+        return UUID.randomUUID() + "_" + file.getOriginalFilename();
     }
 
-    public static FileSystemResource convertToFileSystemResource(final File file) {
-        return new FileSystemResource(file);
+    public static File findFile(String path) {
+        return Paths.get(path).toFile();
+    }
+
+    public static String readFile(final File file) {
+        try {
+            return new String(Files.readAllBytes(Paths.get(file.getPath())));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static String saveLatexFile(final String pdfId, byte[] content) {

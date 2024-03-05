@@ -13,9 +13,9 @@ import sunflower.server.application.event.OcrStatusEvent;
 import sunflower.server.client.OcrRegisterClient;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
+import sunflower.server.util.FileUtil;
 
 import java.io.File;
-import java.nio.file.Paths;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
@@ -47,8 +47,7 @@ public class OcrRegisterEventListener {
 
         final Long id = event.getTranslations().getId();
         final Translations translations = translationsRepository.getById(id);
-        final String pdfPath = translations.getPdfPath();
-        final File file = Paths.get(pdfPath).toFile();
+        final File file = FileUtil.findFile(translations.getPdfPath());
 
         translations.startOcr();
         final String pdfId = ocrRegisterClient.requestPdfId(file);

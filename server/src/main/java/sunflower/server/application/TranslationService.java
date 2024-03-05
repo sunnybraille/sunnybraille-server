@@ -13,10 +13,6 @@ import sunflower.server.repository.TranslationsRepository;
 import sunflower.server.util.FileUtil;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,7 +25,7 @@ public class TranslationService {
     @Transactional
     public Long register(final MultipartFile file) {
         final String originalFileName = file.getOriginalFilename();
-        final String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        final String fileName = FileUtil.randomFileName(file);
 
         final String pdfPath = FileUtil.savePdfFile(file, fileName);
         final Translations translations = translationsRepository.save(Translations.of(pdfPath, originalFileName));
@@ -49,13 +45,8 @@ public class TranslationService {
 
     public String findBrfFileById(final Long id) {
         final Translations translations = translationsRepository.getById(id);
-        final String brfPath = translations.getBrfPath();
-        final File file = Paths.get(brfPath).toFile();
+        final File file = FileUtil.findFile(translations.getBrfPath());
 
-        try {
-            return new String(Files.readAllBytes(Paths.get(file.getPath())));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return FileUtil.readFile(file);
     }
 }
