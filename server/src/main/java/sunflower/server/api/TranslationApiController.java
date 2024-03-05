@@ -15,7 +15,8 @@ import sunflower.server.api.response.TranslationStatusResponse;
 import sunflower.server.application.TranslationService;
 import sunflower.server.application.dto.BrfFileDto;
 import sunflower.server.application.dto.TranslationStatusDto;
-import sunflower.server.exception.FileEmptyException;
+import sunflower.server.exception.ErrorCode;
+import sunflower.server.exception.FileException;
 
 import java.net.URI;
 
@@ -31,7 +32,7 @@ public class TranslationApiController implements TranslationApiControllerDocs {
     @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PdfRegisterResponse> registerPdf(@RequestPart("file") MultipartFile file) {
         if (file.isEmpty()) {
-            throw new FileEmptyException(1, "빈 파일입니다.");
+            throw new FileException(ErrorCode.P);
         }
 
         final Long id = translationService.register(file);

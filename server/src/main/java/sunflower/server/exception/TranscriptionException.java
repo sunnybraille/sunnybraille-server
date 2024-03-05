@@ -1,5 +1,8 @@
 package sunflower.server.exception;
 
+import lombok.Getter;
+
+@Getter
 public class TranscriptionException extends RuntimeException {
 
     private final ErrorCode errorCode;

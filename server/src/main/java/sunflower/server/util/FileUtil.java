@@ -2,6 +2,8 @@ package sunflower.server.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
+import sunflower.server.exception.ErrorCode;
+import sunflower.server.exception.FileException;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -22,7 +24,7 @@ public final class FileUtil {
             try {
                 Files.createDirectories(directoryPath);
             } catch (IOException e) {
-                throw new RuntimeException("Unable to create directory: " + directoryPath, e);
+                throw new FileException(e, "Unable to create directory: " + directoryPath);
             }
         }
 
@@ -34,7 +36,7 @@ public final class FileUtil {
         } else if (file instanceof byte[]) {
             path = saveZipFile((byte[]) file, fileName, directoryPath);
         } else {
-            throw new IllegalArgumentException("Unsupported file type");
+            throw new FileException("Unsupported file type");
         }
 
         return path.toString();
@@ -46,7 +48,7 @@ public final class FileUtil {
             Files.copy(file.getInputStream(), filePath);
             return filePath;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileException(ErrorCode.P, e);
         }
     }
 
@@ -56,7 +58,7 @@ public final class FileUtil {
             writer.write(content);
             return filePath;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileException(ErrorCode.B, e);
         }
     }
 
@@ -74,7 +76,7 @@ public final class FileUtil {
             }
             return Paths.get(path);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileException(ErrorCode.L, e);
         }
     }
 
@@ -90,7 +92,7 @@ public final class FileUtil {
         try {
             return new String(Files.readAllBytes(Paths.get(file.getPath())));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileException(e);
         }
     }
 }
