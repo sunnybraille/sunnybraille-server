@@ -13,6 +13,7 @@ import sunflower.server.api.response.BrfFileQueryResponse;
 import sunflower.server.api.response.PdfRegisterResponse;
 import sunflower.server.api.response.TranslationStatusResponse;
 import sunflower.server.application.TranslationService;
+import sunflower.server.application.dto.BrfFileDto;
 import sunflower.server.application.dto.TranslationStatusDto;
 import sunflower.server.exception.FileEmptyException;
 
@@ -48,8 +49,8 @@ public class TranslationApiController implements TranslationApiControllerDocs {
 
     @GetMapping("/{id}")
     public ResponseEntity<BrfFileQueryResponse> queryBrfFile(@PathVariable("id") Long id) {
-        final String brfContent = translationService.findBrfFileById(id);
-        final BrfFileQueryResponse response = BrfFileQueryResponse.from(id, brfContent);
+        final BrfFileDto brfFile = translationService.findBrfFileById(id);
+        final BrfFileQueryResponse response = BrfFileQueryResponse.from(id, brfFile.getOriginalFileName(), brfFile.getContent());
         return ResponseEntity.ok(response);
     }
 }
