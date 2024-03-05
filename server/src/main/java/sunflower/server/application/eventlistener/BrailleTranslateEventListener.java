@@ -58,7 +58,7 @@ public class BrailleTranslateEventListener {
         final String brfContent = brailleTranslationClient.translate(latexFile);
         final String brfPath = saveBrfFile(brfContent, translations.getOcrPdfId());
 
-        translations.registerBrfPath(brfPath);
+        translations.finishTransbraille(brfPath);
     }
 
     private String saveBrfFile(final String content, final String ocrPdfId) {
