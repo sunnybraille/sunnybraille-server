@@ -5,25 +5,25 @@ import lombok.Getter;
 @Getter
 public class FileException extends RuntimeException {
 
-    private final ErrorCode code;
+    private final ErrorCode errorCode;
     private final String message;
 
-    public FileException(final ErrorCode code, final Throwable cause, final String message) {
+    public FileException(final ErrorCode errorCode, final Throwable cause, final String message) {
         super(cause);
-        this.code = code;
+        this.errorCode = errorCode;
         this.message = message;
     }
 
-    public FileException(final ErrorCode code, final Throwable cause) {
-        this(code, cause, null);
+    public FileException(final ErrorCode errorCode, final Throwable cause) {
+        this(errorCode, cause, null);
     }
 
     public FileException(final Throwable cause, final String message) {
         this(null, cause, message);
     }
 
-    public FileException(final ErrorCode code) {
-        this(code, null, null);
+    public FileException(final ErrorCode errorCode) {
+        this(errorCode, null, null);
     }
 
     public FileException(final Throwable cause) {
