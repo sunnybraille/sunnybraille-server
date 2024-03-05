@@ -78,6 +78,6 @@ public class Translations {
 
     public void finishTransbraille(final String brfPath) {
         this.brfPath = brfPath;
-        this.ocrPercentDone = 100;
+        this.translationPercentDone = 100;
     }
 }
