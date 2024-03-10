@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import sunflower.server.api.response.ExceptionResponse;
+import sunflower.server.exception.AuthException;
 import sunflower.server.exception.FileException;
 import sunflower.server.exception.TranscriptionException;
 
@@ -38,6 +39,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("점역 과정에서 예외 발생");
         return ResponseEntity
                 .status(INTERNAL_SERVER_ERROR.value())
+                .body(ExceptionResponse.from(exception));
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ExceptionResponse> handleAuthException(final AuthException exception) {
+        log.error("점역 과정에서 예외 발생");
+        return ResponseEntity
+                .status(BAD_REQUEST.value())
                 .body(ExceptionResponse.from(exception));
     }
 

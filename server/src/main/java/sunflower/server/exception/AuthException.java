@@ -17,6 +17,6 @@ public class AuthException extends RuntimeException {
     }
 
     public AuthException() {
-        this(null);
+        this(null, "인증에 실패했습니다. 다시 시도해 주세요.");
     }
 }
