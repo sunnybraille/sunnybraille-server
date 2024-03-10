@@ -15,22 +15,24 @@ import sunflower.server.application.SessionService;
 
 @RequiredArgsConstructor
 @RestController
-public class MemberApiController {
+public class MemberApiController implements MemberApiControllerDocs {
 
     private final MemberService memberService;
     private final SessionService sessionService;
 
+    @Override
     @PostMapping("/join")
-    ResponseEntity<Void> join(@RequestBody JoinRequest request) {
+    public ResponseEntity<Void> join(@RequestBody JoinRequest request) {
         memberService.join(request.getLoginId(), request.getPassword());
 
         return ResponseEntity
-                .status(HttpStatus.CREATED.value())
+                .status(HttpStatus.OK.value())
                 .build();
     }
 
+    @Override
     @PostMapping("/login")
-    ResponseEntity<Void> login(@RequestBody LoginRequest request, HttpServletResponse response) {
+    public ResponseEntity<Void> login(@RequestBody LoginRequest request, HttpServletResponse response) {
         final Long id = memberService.login(request.getLoginId(), request.getPassword());
         final String sessionId = sessionService.createSessionId(id);
 

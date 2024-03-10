@@ -14,7 +14,7 @@ import sunflower.server.api.response.BrfFileQueryResponse;
 import sunflower.server.api.response.PdfRegisterResponse;
 import sunflower.server.api.response.TranslationStatusResponse;
 
-@Tag(name = "점자 번역 API", description = "Sunny Braille 핵심 기능으로, 점역 작업을 담당합니다.")
+@Tag(name = "점자 번역 API", description = "Sunny Braille 핵심 기능으로, 점역 작업을 담당합니다. (쿠키에 인증 정보를 포함)")
 public interface TranslationApiControllerDocs {
 
     @Operation(summary = "PDF 점자 번역 요청 API", description = "점역 작업은 서버에서 비동기적으로 처리되며, id만 즉시 반환됩니다.")
