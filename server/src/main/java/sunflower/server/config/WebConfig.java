@@ -3,23 +3,25 @@ package sunflower.server.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import sunflower.server.application.interceptor.SessionInterceptor;
+import sunflower.server.application.resolver.MemberAuthArgumentResolver;
+
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     private final String appURI;
-    private final SessionInterceptor sessionInterceptor;
+    private final MemberAuthArgumentResolver memberAuthArgumentResolver;
 
     public WebConfig(
             @Value("${client.uri}") String appURI,
-            final SessionInterceptor sessionInterceptor
+            final MemberAuthArgumentResolver memberAuthArgumentResolver
     ) {
         this.appURI = appURI;
-        this.sessionInterceptor = sessionInterceptor;
+        this.memberAuthArgumentResolver = memberAuthArgumentResolver;
     }
 
     @Override
@@ -40,8 +42,7 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(sessionInterceptor)
-                .addPathPatterns("/translations/**");
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(memberAuthArgumentResolver);
     }
 }

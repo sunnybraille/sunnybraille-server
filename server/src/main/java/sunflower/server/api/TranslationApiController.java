@@ -15,6 +15,7 @@ import sunflower.server.api.response.TranslationStatusResponse;
 import sunflower.server.application.TranslationService;
 import sunflower.server.application.dto.BrfFileDto;
 import sunflower.server.application.dto.TranslationStatusDto;
+import sunflower.server.application.resolver.MemberAuth;
 import sunflower.server.exception.ErrorCode;
 import sunflower.server.exception.FileException;
 
@@ -30,7 +31,10 @@ public class TranslationApiController implements TranslationApiControllerDocs {
     private final TranslationService translationService;
 
     @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<PdfRegisterResponse> registerPdf(@RequestPart("file") MultipartFile file) {
+    public ResponseEntity<PdfRegisterResponse> registerPdf(
+            MemberAuth member,
+            @RequestPart("file") MultipartFile file
+    ) {
         if (file.isEmpty()) {
             throw new FileException(ErrorCode.P);
         }
@@ -43,13 +47,19 @@ public class TranslationApiController implements TranslationApiControllerDocs {
     }
 
     @GetMapping("/{id}/status")
-    public ResponseEntity<TranslationStatusResponse> checkStatus(@PathVariable("id") Long id) {
+    public ResponseEntity<TranslationStatusResponse> checkStatus(
+            MemberAuth member,
+            @PathVariable("id") Long id
+    ) {
         final TranslationStatusDto dto = translationService.status(id);
         return ResponseEntity.ok(TranslationStatusResponse.from(dto));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BrfFileQueryResponse> queryBrfFile(@PathVariable("id") Long id) {
+    public ResponseEntity<BrfFileQueryResponse> queryBrfFile(
+            MemberAuth member,
+            @PathVariable("id") Long id
+    ) {
         final BrfFileDto brfFile = translationService.findBrfFileById(id);
         final BrfFileQueryResponse response = BrfFileQueryResponse.from(id, brfFile.getOriginalFileName(), brfFile.getContent());
         return ResponseEntity.ok(response);

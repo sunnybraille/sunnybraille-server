@@ -1,36 +1,46 @@
-package sunflower.server.application.interceptor;
+package sunflower.server.application.resolver;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
 import sunflower.server.application.SessionService;
 import sunflower.server.exception.AuthException;
 import sunflower.server.util.SessionEncryptor;
 
-@Component
 @RequiredArgsConstructor
-public class SessionInterceptor implements HandlerInterceptor {
+@Component
+public class MemberAuthArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final SessionService sessionService;
     private final SessionEncryptor sessionEncryptor;
 
     @Override
-    public boolean preHandle(
-            final HttpServletRequest request,
-            final HttpServletResponse response,
-            final Object handler
-    ) {
+    public boolean supportsParameter(final MethodParameter parameter) {
+        return parameter
+                .getParameterType()
+                .equals(MemberAuth.class);
+    }
+
+    @Override
+    public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) throws Exception {
+        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String encryptedSessionId = extractSessionId(request.getCookies());
+
         if (encryptedSessionId == null) {
             throw new AuthException();
         }
 
         final Long sessionId = sessionEncryptor.decrypt(encryptedSessionId);
         if (sessionService.isValidSession(sessionId)) {
-            return true;
+            // TODO: 세션 만료시간 늘리기
+            final Long memberId = sessionService.findMemberIdBy(sessionId);
+            return MemberAuth.from(memberId);
         } else {
             throw new AuthException();
         }
