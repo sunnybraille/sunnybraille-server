@@ -40,6 +40,7 @@ public class MemberApiController implements MemberApiControllerDocs {
         cookie.setHttpOnly(true);
         cookie.setMaxAge(3600);
         cookie.setPath("/");
+        cookie.setSecure(true);
         response.addCookie(cookie);
 
         return ResponseEntity
