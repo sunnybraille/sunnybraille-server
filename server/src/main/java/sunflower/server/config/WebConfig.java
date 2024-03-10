@@ -42,6 +42,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(sessionInterceptor)
-                .excludePathPatterns("/login", "/join");
+                .addPathPatterns("/translations/**");
     }
 }
