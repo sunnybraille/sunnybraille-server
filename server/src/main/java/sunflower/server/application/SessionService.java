@@ -17,4 +17,9 @@ public class SessionService {
         final Session session = sessionRepository.save(Session.of(memberId));
         return sessionEncryptor.encrypt(session.getId());
     }
+
+    public boolean isValidSession(final Long sessionId) {
+        final Session session = sessionRepository.getById(sessionId);
+        return session.isValid();
+    }
 }

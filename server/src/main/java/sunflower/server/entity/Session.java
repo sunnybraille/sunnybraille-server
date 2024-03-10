@@ -36,4 +36,10 @@ public class Session {
     public static Session of(final Long memberId) {
         return new Session(memberId);
     }
+
+    public boolean isValid() {
+        // TODO: 현재는 만료 시간만 체크중이지만, 이후에 IP 등 다양한 검증 로직 추가
+        LocalDateTime currentTime = LocalDateTime.now();
+        return expiredAt.isAfter(currentTime);
+    }
 }
