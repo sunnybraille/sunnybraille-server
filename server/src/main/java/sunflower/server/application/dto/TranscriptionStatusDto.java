@@ -6,16 +6,16 @@ import sunflower.server.entity.Translations;
 
 @Getter
 @RequiredArgsConstructor
-public class TranslationStatusDto {
+public class TranscriptionStatusDto {
 
     private final Long id;
     private final OcrStatus ocrStatus;
     private final Integer ocrPercentDone;
-    private final BrailleTranslationStatus brailleTranslationStatus;
-    private final Integer brailleTranslationPercentDone;
+    private final TranscriptionStatus transcriptionStatus;
+    private final Integer transcriptionPercentDone;
 
-    public static TranslationStatusDto from(final Translations translations) {
-        return new TranslationStatusDto(
+    public static TranscriptionStatusDto from(final Translations translations) {
+        return new TranscriptionStatusDto(
                 translations.getId(),
                 ocrStatus(translations.getOcrStatus()),
                 translations.getOcrPercentDone(),
@@ -26,22 +26,22 @@ public class TranslationStatusDto {
 
     private static OcrStatus ocrStatus(final sunflower.server.client.dto.OcrStatus status) {
         if (status == null) {
-            return TranslationStatusDto.OcrStatus.NONE;
+            return TranscriptionStatusDto.OcrStatus.NONE;
         }
         if (status == sunflower.server.client.dto.OcrStatus.SPLIT) {
-            return TranslationStatusDto.OcrStatus.PROCESSING;
+            return TranscriptionStatusDto.OcrStatus.PROCESSING;
         }
-        return TranslationStatusDto.OcrStatus.COMPLETED;
+        return TranscriptionStatusDto.OcrStatus.COMPLETED;
     }
 
-    private static BrailleTranslationStatus brailleTranslationStatus(final Integer percentDone) {
+    private static TranscriptionStatus brailleTranslationStatus(final Integer percentDone) {
         if (percentDone == null || percentDone == 0) {
-            return BrailleTranslationStatus.NONE;
+            return TranscriptionStatus.NONE;
         }
         if (percentDone == 100) {
-            return BrailleTranslationStatus.COMPLETED;
+            return TranscriptionStatus.COMPLETED;
         }
-        return BrailleTranslationStatus.PROCESSING;
+        return TranscriptionStatus.PROCESSING;
     }
 
     public enum OcrStatus {
@@ -52,7 +52,7 @@ public class TranslationStatusDto {
         ;
     }
 
-    public enum BrailleTranslationStatus {
+    public enum TranscriptionStatus {
 
         NONE,
         PROCESSING,

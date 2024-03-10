@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import sunflower.server.api.response.BrfFileQueryResponse;
 import sunflower.server.api.response.PdfRegisterResponse;
-import sunflower.server.api.response.TranslationStatusResponse;
+import sunflower.server.api.response.TranscriptionStatusResponse;
 import sunflower.server.application.TranslationService;
 import sunflower.server.application.dto.BrfFileDto;
-import sunflower.server.application.dto.TranslationStatusDto;
+import sunflower.server.application.dto.TranscriptionStatusDto;
 import sunflower.server.application.resolver.MemberAuth;
 import sunflower.server.exception.ErrorCode;
 import sunflower.server.exception.FileException;
@@ -47,12 +47,12 @@ public class TranslationApiController implements TranslationApiControllerDocs {
     }
 
     @GetMapping("/{id}/status")
-    public ResponseEntity<TranslationStatusResponse> checkStatus(
+    public ResponseEntity<TranscriptionStatusResponse> checkStatus(
             MemberAuth member,
             @PathVariable("id") Long id
     ) {
-        final TranslationStatusDto dto = translationService.status(id);
-        return ResponseEntity.ok(TranslationStatusResponse.from(dto));
+        final TranscriptionStatusDto dto = translationService.status(id);
+        return ResponseEntity.ok(TranscriptionStatusResponse.from(dto));
     }
 
     @GetMapping("/{id}")

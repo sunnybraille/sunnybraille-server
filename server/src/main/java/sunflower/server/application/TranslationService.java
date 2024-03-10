@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import sunflower.server.application.dto.BrfFileDto;
-import sunflower.server.application.dto.TranslationStatusDto;
+import sunflower.server.application.dto.TranscriptionStatusDto;
 import sunflower.server.application.event.OcrRegisterEvent;
 import sunflower.server.entity.Translations;
 import sunflower.server.repository.TranslationsRepository;
@@ -41,8 +41,8 @@ public class TranslationService {
     }
 
     @Transactional
-    public TranslationStatusDto status(final Long id) {
-        return TranslationStatusDto.from(translationsRepository.getById(id));
+    public TranscriptionStatusDto status(final Long id) {
+        return TranscriptionStatusDto.from(translationsRepository.getById(id));
     }
 
     public BrfFileDto findBrfFileById(final Long id) {
