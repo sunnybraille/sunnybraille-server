@@ -13,6 +13,7 @@ import sunflower.server.exception.TranscriptionException;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Slf4j
 @RestControllerAdvice
@@ -46,7 +47,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleAuthException(final AuthException exception) {
         log.error("점역 과정에서 예외 발생");
         return ResponseEntity
-                .status(BAD_REQUEST.value())
+                .status(UNAUTHORIZED.value())
                 .body(ExceptionResponse.from(exception));
     }
 
