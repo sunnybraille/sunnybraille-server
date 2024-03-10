@@ -22,4 +22,10 @@ public class SessionService {
         final Session session = sessionRepository.getById(sessionId);
         return session.isValid();
     }
+
+    public Long findMemberIdBy(final Long sessionId) {
+        return sessionRepository
+                .getById(sessionId)
+                .getMemberId();
+    }
 }
