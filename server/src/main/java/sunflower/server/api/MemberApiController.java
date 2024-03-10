@@ -1,5 +1,7 @@
 package sunflower.server.api;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,22 +11,37 @@ import org.springframework.web.bind.annotation.RestController;
 import sunflower.server.api.request.JoinRequest;
 import sunflower.server.api.request.LoginRequest;
 import sunflower.server.application.MemberService;
+import sunflower.server.application.SessionService;
 
 @RequiredArgsConstructor
 @RestController
 public class MemberApiController {
 
     private final MemberService memberService;
+    private final SessionService sessionService;
 
     @PostMapping("/join")
     ResponseEntity<Void> join(@RequestBody JoinRequest request) {
         memberService.join(request.getLoginId(), request.getPassword());
-        return ResponseEntity.status(HttpStatus.CREATED.value()).build();
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED.value())
+                .build();
     }
 
     @PostMapping("/login")
-    ResponseEntity<Void> login(@RequestBody LoginRequest request) {
+    ResponseEntity<Void> login(@RequestBody LoginRequest request, HttpServletResponse response) {
         final Long id = memberService.login(request.getLoginId(), request.getPassword());
-        return null;
+        final String sessionId = sessionService.createSessionId(id);
+
+        Cookie cookie = new Cookie("sessionId", sessionId);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(3600);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return ResponseEntity
+                .status(HttpStatus.OK.value())
+                .build();
     }
 }

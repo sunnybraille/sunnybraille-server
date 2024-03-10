@@ -4,14 +4,18 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
+@Getter
 @Entity
 public class Session {
 
@@ -19,7 +23,17 @@ public class Session {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    private int userId;
-    private Date createdAt;
-    private Date expiredAt;
+    private Long memberId;
+    private LocalDateTime createdAt;
+    private LocalDateTime expiredAt;
+
+    public Session(final Long memberId) {
+        this.memberId = memberId;
+        this.createdAt = LocalDateTime.now();
+        this.expiredAt = LocalDateTime.now().plus(3, ChronoUnit.HOURS);
+    }
+
+    public static Session of(final Long memberId) {
+        return new Session(memberId);
+    }
 }
