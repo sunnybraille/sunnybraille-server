@@ -1,19 +1,20 @@
 package sunflower.server.api.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import sunflower.server.exception.AuthException;
 import sunflower.server.exception.FileException;
 import sunflower.server.exception.TranscriptionException;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ExceptionResponse {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final String errorCode;
+    private String errorCode;
 
-    private final String message;
+    private String message;
 
     public static ExceptionResponse from(final FileException exception) {
         return new ExceptionResponse(exception.getErrorCode().name(), exception.getMessage());
@@ -21,5 +22,9 @@ public class ExceptionResponse {
 
     public static ExceptionResponse from(final TranscriptionException exception) {
         return new ExceptionResponse(exception.getErrorCode().name(), exception.getMessage());
+    }
+
+    public static ExceptionResponse from(final AuthException exception) {
+        return new ExceptionResponse(null, exception.getMessage());
     }
 }

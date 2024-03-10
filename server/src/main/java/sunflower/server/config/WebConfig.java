@@ -4,15 +4,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import sunflower.server.application.interceptor.SessionInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     private final String appURI;
+    private final SessionInterceptor sessionInterceptor;
 
-    public WebConfig(@Value("${client.uri}") String appURI) {
+    public WebConfig(
+            @Value("${client.uri}") String appURI,
+            final SessionInterceptor sessionInterceptor
+    ) {
         this.appURI = appURI;
+        this.sessionInterceptor = sessionInterceptor;
     }
 
     @Override
@@ -30,5 +37,11 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .exposedHeaders("Location")
                 .allowCredentials(true);
+    }
+
+    @Override
+    public void addInterceptors(final InterceptorRegistry registry) {
+        registry.addInterceptor(sessionInterceptor)
+                .addPathPatterns("/translations/**");
     }
 }

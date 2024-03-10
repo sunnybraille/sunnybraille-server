@@ -1,14 +1,12 @@
 package sunflower.server.api.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 public class JoinRequest {
 
-    private String loginId;
-    private String password;
+    private final String loginId;
+    private final String password;
 }
