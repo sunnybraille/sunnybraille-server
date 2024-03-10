@@ -1,6 +1,5 @@
 package sunflower.server.api;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,12 +35,14 @@ public class MemberApiController implements MemberApiControllerDocs {
         final Long id = memberService.login(request.getLoginId(), request.getPassword());
         final String sessionId = sessionService.createSessionId(id);
 
-        Cookie cookie = new Cookie("sessionId", sessionId);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(3600);
-        cookie.setPath("/");
-        cookie.setSecure(true);
-        response.addCookie(cookie);
+//        Cookie cookie = new Cookie("sessionId", sessionId);
+//        cookie.setHttpOnly(true);
+//        cookie.setMaxAge(3600);
+//        cookie.setPath("/");
+//        cookie.setSecure(true);
+//        response.addCookie(cookie);
+
+        response.setHeader("Set-Cookie", "sessionId=" + sessionId + "; HttpOnly; Max-Age=3600; Path=/; Secure; SameSite=None");
 
         return ResponseEntity
                 .status(HttpStatus.OK.value())
