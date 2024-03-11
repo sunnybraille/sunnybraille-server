@@ -42,7 +42,7 @@ public class MemberApiController implements MemberApiControllerDocs {
 //        cookie.setSecure(true);
 //        response.addCookie(cookie);
 
-        response.setHeader("Set-Cookie", "sessionId=" + sessionId + "; HttpOnly; Max-Age=3600; Path=/; Secure; SameSite=None");
+        response.setHeader("Set-Cookie", "sessionId=" + sessionId + "; HttpOnly; Max-Age=3600; Path=/; Domain=sunnybraille.com; Secure; SameSite=None");
 
         return ResponseEntity
                 .status(HttpStatus.OK.value())
