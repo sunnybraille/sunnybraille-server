@@ -2,6 +2,7 @@ package sunflower.server.application;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sunflower.server.entity.Session;
 import sunflower.server.repository.SessionRepository;
 import sunflower.server.util.SessionEncryptor;
@@ -27,5 +28,11 @@ public class SessionService {
         return sessionRepository
                 .getById(sessionId)
                 .getMemberId();
+    }
+
+    @Transactional
+    public void extendTime(final Long sessionId) {
+        final Session session = sessionRepository.getById(sessionId);
+        session.extendTime();
     }
 }

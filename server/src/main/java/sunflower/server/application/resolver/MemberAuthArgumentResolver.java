@@ -38,8 +38,8 @@ public class MemberAuthArgumentResolver implements HandlerMethodArgumentResolver
 
         final Long sessionId = sessionEncryptor.decrypt(encryptedSessionId);
         if (sessionService.isValidSession(sessionId)) {
-            // TODO: 세션 만료시간 늘리기
             final Long memberId = sessionService.findMemberIdBy(sessionId);
+            sessionService.extendTime(sessionId);
             return MemberAuth.from(memberId);
         } else {
             throw new AuthException();
