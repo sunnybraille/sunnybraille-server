@@ -25,7 +25,7 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/translations")
+@RequestMapping("/transcriptions")
 public class TranscriptionApiController implements TranscriptionApiControllerDocs {
 
     private final TranscriptionService transcriptionService;
@@ -42,7 +42,7 @@ public class TranscriptionApiController implements TranscriptionApiControllerDoc
         final Long id = transcriptionService.register(file);
 
         return ResponseEntity
-                .created(URI.create("/translations/" + id))
+                .created(URI.create("/transcriptions/" + id))
                 .body(PdfRegisterResponse.from(file.getOriginalFilename()));
     }
 
