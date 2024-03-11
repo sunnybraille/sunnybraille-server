@@ -18,7 +18,7 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @Entity
-public class Translations {
+public class Transcriptions {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -31,23 +31,23 @@ public class Translations {
     private OcrStatus ocrStatus;
 
     private Integer ocrPercentDone;
-    private Integer translationPercentDone;
+    private Integer transcriptionPercentDone;
 
     private String pdfPath;
     private String latexPath;
     private String brfPath;
 
-    public static Translations of(final String pdfPath, final String inputFileName) {
-        final Translations translations = new Translations();
-        translations.start();
-        translations.changePdfPath(pdfPath);
-        translations.changeInputFileName(inputFileName);
-        return translations;
+    public static Transcriptions of(final String pdfPath, final String inputFileName) {
+        final Transcriptions transcriptions = new Transcriptions();
+        transcriptions.start();
+        transcriptions.changePdfPath(pdfPath);
+        transcriptions.changeInputFileName(inputFileName);
+        return transcriptions;
     }
 
     private void start() {
         this.ocrPercentDone = 0;
-        this.translationPercentDone = 0;
+        this.transcriptionPercentDone = 0;
     }
 
     private void changePdfPath(final String pdfPath) {
@@ -78,6 +78,6 @@ public class Translations {
 
     public void finishTransbraille(final String brfPath) {
         this.brfPath = brfPath;
-        this.translationPercentDone = 100;
+        this.transcriptionPercentDone = 100;
     }
 }

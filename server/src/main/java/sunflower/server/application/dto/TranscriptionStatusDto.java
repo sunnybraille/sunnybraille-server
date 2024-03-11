@@ -2,7 +2,7 @@ package sunflower.server.application.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sunflower.server.entity.Translations;
+import sunflower.server.entity.Transcriptions;
 
 @Getter
 @RequiredArgsConstructor
@@ -14,13 +14,13 @@ public class TranscriptionStatusDto {
     private final TranscriptionStatus transcriptionStatus;
     private final Integer transcriptionPercentDone;
 
-    public static TranscriptionStatusDto from(final Translations translations) {
+    public static TranscriptionStatusDto from(final Transcriptions transcriptions) {
         return new TranscriptionStatusDto(
-                translations.getId(),
-                ocrStatus(translations.getOcrStatus()),
-                translations.getOcrPercentDone(),
-                brailleTranslationStatus(translations.getTranslationPercentDone()),
-                translations.getTranslationPercentDone()
+                transcriptions.getId(),
+                ocrStatus(transcriptions.getOcrStatus()),
+                transcriptions.getOcrPercentDone(),
+                brailleTranslationStatus(transcriptions.getTranscriptionPercentDone()),
+                transcriptions.getTranscriptionPercentDone()
         );
     }
 

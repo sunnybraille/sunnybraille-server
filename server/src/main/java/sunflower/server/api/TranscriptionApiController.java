@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sunflower.server.api.response.BrfFileQueryResponse;
 import sunflower.server.api.response.PdfRegisterResponse;
 import sunflower.server.api.response.TranscriptionStatusResponse;
-import sunflower.server.application.TranslationService;
+import sunflower.server.application.TranscriptionService;
 import sunflower.server.application.dto.BrfFileDto;
 import sunflower.server.application.dto.TranscriptionStatusDto;
 import sunflower.server.application.resolver.MemberAuth;
@@ -26,9 +26,9 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/translations")
-public class TranslationApiController implements TranslationApiControllerDocs {
+public class TranscriptionApiController implements TranscriptionApiControllerDocs {
 
-    private final TranslationService translationService;
+    private final TranscriptionService transcriptionService;
 
     @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PdfRegisterResponse> registerPdf(
@@ -39,7 +39,7 @@ public class TranslationApiController implements TranslationApiControllerDocs {
             throw new FileException(ErrorCode.P);
         }
 
-        final Long id = translationService.register(file);
+        final Long id = transcriptionService.register(file);
 
         return ResponseEntity
                 .created(URI.create("/translations/" + id))
@@ -51,7 +51,7 @@ public class TranslationApiController implements TranslationApiControllerDocs {
             MemberAuth member,
             @PathVariable("id") Long id
     ) {
-        final TranscriptionStatusDto dto = translationService.status(id);
+        final TranscriptionStatusDto dto = transcriptionService.status(id);
         return ResponseEntity.ok(TranscriptionStatusResponse.from(dto));
     }
 
@@ -60,7 +60,7 @@ public class TranslationApiController implements TranslationApiControllerDocs {
             MemberAuth member,
             @PathVariable("id") Long id
     ) {
-        final BrfFileDto brfFile = translationService.findBrfFileById(id);
+        final BrfFileDto brfFile = transcriptionService.findBrfFileById(id);
         final BrfFileQueryResponse response = BrfFileQueryResponse.from(id, brfFile.getOriginalFileName(), brfFile.getContent());
         return ResponseEntity.ok(response);
     }

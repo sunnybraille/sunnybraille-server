@@ -7,5 +7,5 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 class TranslationsRepositoryTest {
 
     @Autowired
-    private TranslationsRepository translationsRepository;
+    private TranscriptionsRepository transcriptionsRepository;
 }

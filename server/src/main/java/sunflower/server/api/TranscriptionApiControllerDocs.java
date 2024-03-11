@@ -16,14 +16,14 @@ import sunflower.server.api.response.TranscriptionStatusResponse;
 import sunflower.server.application.resolver.MemberAuth;
 
 @Tag(name = "점자 번역 API", description = "Sunny Braille 핵심 기능으로, 점역 작업을 담당합니다. (쿠키에 인증 정보를 포함)")
-public interface TranslationApiControllerDocs {
+public interface TranscriptionApiControllerDocs {
 
     @Operation(summary = "PDF 점자 번역 요청 API", description = "점역 작업은 서버에서 비동기적으로 처리되며, id만 즉시 반환됩니다. (인증 정보는 쿠키를 통해서 받습니다.)")
     @ApiResponse(responseCode = "201", description = "PDF가 성공적으로 업로드되었습니다.",
             headers =
             @io.swagger.v3.oas.annotations.headers.Header(
                     name = "Location",
-                    description = "Translations id(해바라기에서 제공하는 id)",
+                    description = "Transcriptions id(해바라기에서 제공하는 id)",
                     schema = @Schema(type = "long"),
                     required = true
             ))
@@ -41,7 +41,7 @@ public interface TranslationApiControllerDocs {
             })
     ResponseEntity<TranscriptionStatusResponse> checkStatus(
             MemberAuth member,
-            @Parameter(description = "Translations id", required = true) @PathVariable("id") Long id
+            @Parameter(description = "Transcriptions id", required = true) @PathVariable("id") Long id
     );
 
     @Operation(summary = "점역 결과 BRF 파일 반환 API", description = "id와 함께 요청하면 점역 결과를 반환합니다. (인증 정보는 쿠키를 통해서 받습니다.)")
@@ -51,6 +51,6 @@ public interface TranslationApiControllerDocs {
             })
     ResponseEntity<BrfFileQueryResponse> queryBrfFile(
             MemberAuth member,
-            @Parameter(description = "Translations id", required = true) @PathVariable("id") Long id
+            @Parameter(description = "Transcriptions id", required = true) @PathVariable("id") Long id
     );
 }

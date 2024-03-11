@@ -2,7 +2,7 @@ package sunflower.server.application.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sunflower.server.entity.Translations;
+import sunflower.server.entity.Transcriptions;
 
 @RequiredArgsConstructor
 @Getter
@@ -12,7 +12,7 @@ public class BrfFileDto {
     private final String originalFileName;
     private final String content;
 
-    public static BrfFileDto of(final Translations translations, final String content) {
-        return new BrfFileDto(translations.getId(), translations.getInputFileName(), content);
+    public static BrfFileDto of(final Transcriptions transcriptions, final String content) {
+        return new BrfFileDto(transcriptions.getId(), transcriptions.getInputFileName(), content);
     }
 }

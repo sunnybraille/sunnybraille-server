@@ -9,8 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 import sunflower.server.application.dto.BrfFileDto;
 import sunflower.server.application.dto.TranscriptionStatusDto;
 import sunflower.server.application.event.OcrRegisterEvent;
-import sunflower.server.entity.Translations;
-import sunflower.server.repository.TranslationsRepository;
+import sunflower.server.entity.Transcriptions;
+import sunflower.server.repository.TranscriptionsRepository;
 import sunflower.server.util.FileUtil;
 
 import java.io.File;
@@ -19,9 +19,9 @@ import java.nio.file.Paths;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class TranslationService {
+public class TranscriptionService {
 
-    private final TranslationsRepository translationsRepository;
+    private final TranscriptionsRepository transcriptionsRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
@@ -30,26 +30,26 @@ public class TranslationService {
         final String fileName = FileUtil.createRandomFileName(file);
 
         final String pdfPath = FileUtil.saveFile(file, fileName, Paths.get("src", "main", "pdf"));
-        final Translations translations = translationsRepository.save(Translations.of(pdfPath, originalFileName));
+        final Transcriptions transcriptions = transcriptionsRepository.save(Transcriptions.of(pdfPath, originalFileName));
         log.info("Saved pdf File in Server. File URI: {}", pdfPath);
 
-        eventPublisher.publishEvent(new OcrRegisterEvent(this, translations));
+        eventPublisher.publishEvent(new OcrRegisterEvent(this, transcriptions));
         log.info("pdf file 저장 이벤트를 발행했습니다!");
         log.info("현재 스레드: {}", Thread.currentThread().getName());
 
-        return translations.getId();
+        return transcriptions.getId();
     }
 
     @Transactional
     public TranscriptionStatusDto status(final Long id) {
-        return TranscriptionStatusDto.from(translationsRepository.getById(id));
+        return TranscriptionStatusDto.from(transcriptionsRepository.getById(id));
     }
 
     public BrfFileDto findBrfFileById(final Long id) {
-        final Translations translations = translationsRepository.getById(id);
-        final File file = FileUtil.findFile(translations.getBrfPath());
+        final Transcriptions transcriptions = transcriptionsRepository.getById(id);
+        final File file = FileUtil.findFile(transcriptions.getBrfPath());
 
         final String content = FileUtil.readFile(file);
-        return BrfFileDto.of(translations, content);
+        return BrfFileDto.of(transcriptions, content);
     }
 }
