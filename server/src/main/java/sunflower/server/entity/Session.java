@@ -30,7 +30,11 @@ public class Session {
     public Session(final Long memberId) {
         this.memberId = memberId;
         this.createdAt = LocalDateTime.now();
-        this.expiredAt = LocalDateTime.now().plus(3, ChronoUnit.HOURS);
+        this.expiredAt = extendTime(LocalDateTime.now());
+    }
+
+    private LocalDateTime extendTime(LocalDateTime time) {
+        return time.plus(1, ChronoUnit.HOURS);
     }
 
     public static Session of(final Long memberId) {
@@ -39,7 +43,12 @@ public class Session {
 
     public boolean isValid() {
         // TODO: 현재는 만료 시간만 체크중이지만, 이후에 IP 등 다양한 검증 로직 추가
-        LocalDateTime currentTime = LocalDateTime.now();
+        final LocalDateTime currentTime = LocalDateTime.now();
         return expiredAt.isAfter(currentTime);
+    }
+
+    public void extendTime() {
+        final LocalDateTime currentTime = LocalDateTime.now();
+        this.expiredAt = extendTime(currentTime);
     }
 }
