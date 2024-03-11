@@ -3,18 +3,18 @@ package sunflower.server.application.eventlistener;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 import sunflower.server.application.event.TranscribeEvent;
-import sunflower.server.application.event.OcrDownloadEvent;
-import sunflower.server.client.OcrDownloadClient;
+import sunflower.server.client.TranscriptionClient;
 import sunflower.server.entity.Transcriptions;
+import sunflower.server.exception.FileException;
 import sunflower.server.repository.TranscriptionsRepository;
 import sunflower.server.util.FileUtil;
 
+import java.io.File;
 import java.nio.file.Paths;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
@@ -22,35 +22,35 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRES_NE
 @Slf4j
 @NoArgsConstructor
 @Component
-public class OcrDownloadEventListener {
+public class TranscribeEventListener {
 
     private TranscriptionsRepository transcriptionsRepository;
-    private OcrDownloadClient ocrDownloadClient;
-    private ApplicationEventPublisher eventPublisher;
+    private TranscriptionClient transcriptionClient;
 
     @Autowired
-    public OcrDownloadEventListener(
+    public TranscribeEventListener(
             final TranscriptionsRepository transcriptionsRepository,
-            final OcrDownloadClient ocrDownloadClient,
-            final ApplicationEventPublisher eventPublisher
+            final TranscriptionClient transcriptionClient
     ) {
         this.transcriptionsRepository = transcriptionsRepository;
-        this.ocrDownloadClient = ocrDownloadClient;
-        this.eventPublisher = eventPublisher;
+        this.transcriptionClient = transcriptionClient;
     }
 
     @Async
     @TransactionalEventListener
     @Transactional(propagation = REQUIRES_NEW)
-    public void downloadLatexFile(final OcrDownloadEvent event) {
+    public void downloadLatexFile(final TranscribeEvent event) {
         final Transcriptions transcriptions = transcriptionsRepository.getById(event.getId());
-        final String pdfId = transcriptions.getOcrPdfId();
 
-        final byte[] latex = ocrDownloadClient.download(pdfId);
-        final String latexPath = FileUtil.saveFile(latex, pdfId, Paths.get("src", "main", "latex"));
-        log.info("Latex File 저장! 경로: {}", latexPath);
-        transcriptions.registerLatexPath(latexPath);
+        final File latexFile = FileUtil.findFile(transcriptions.getLatexPath());
 
-        eventPublisher.publishEvent(new TranscribeEvent(this, event.getId()));
+        if (!latexFile.exists()) {
+            throw new FileException("파일이 존재하지 않습니다!");
+        }
+
+        final String brfContent = transcriptionClient.transcribe(latexFile);
+        final String brfPath = FileUtil.saveFile(brfContent, transcriptions.getOcrPdfId(), Paths.get("src", "main", "brf"));
+
+        transcriptions.finishTransbraille(brfPath);
     }
 }

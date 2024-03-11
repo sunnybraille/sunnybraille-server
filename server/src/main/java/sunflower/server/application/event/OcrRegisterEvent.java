@@ -2,15 +2,15 @@ package sunflower.server.application.event;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import sunflower.server.entity.Translations;
+import sunflower.server.entity.Transcriptions;
 
 @Getter
 public class OcrRegisterEvent extends ApplicationEvent {
 
-    private final Translations translations;
+    private final Transcriptions transcriptions;
 
-    public OcrRegisterEvent(final Object source, final Translations translations) {
+    public OcrRegisterEvent(final Object source, final Transcriptions transcriptions) {
         super(source);
-        this.translations = translations;
+        this.transcriptions = transcriptions;
     }
 }

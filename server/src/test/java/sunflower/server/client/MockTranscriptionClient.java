@@ -7,10 +7,10 @@ import java.io.File;
 
 @Component
 @Profile("test")
-public class MockBrailleTranslationClient implements BrailleTranslationClient {
+public class MockTranscriptionClient implements TranscriptionClient {
 
     @Override
-    public String translate(final File file) {
+    public String transcribe(final File file) {
         return null;
     }
 }

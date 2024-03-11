@@ -3,13 +3,13 @@ package sunflower.server.api.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sunflower.server.application.dto.TranslationStatusDto;
+import sunflower.server.application.dto.TranscriptionStatusDto;
 
 @Getter
 @RequiredArgsConstructor
-public class TranslationStatusResponse {
+public class TranscriptionStatusResponse {
 
-    @Schema(description = "Translations ID", defaultValue = "1")
+    @Schema(description = "Transcription ID", defaultValue = "1")
     private final Long id;
 
     @Schema(description = "OCR 진행 상태", defaultValue = "PROCESSING",
@@ -21,18 +21,18 @@ public class TranslationStatusResponse {
 
     @Schema(description = "점역 진행 상태", defaultValue = "NONE",
             allowableValues = {"NONE", "PROCESSING", "COMPLETED"})
-    private final String brailleTranslationsStatus;
+    private final String transcriptionStatus;
 
     @Schema(description = "점역 진행도", defaultValue = "0%")
-    private final Integer brailleTranslationPercentDone;
+    private final Integer transcriptionPercentDone;
 
-    public static TranslationStatusResponse from(final TranslationStatusDto dto) {
-        return new TranslationStatusResponse(
+    public static TranscriptionStatusResponse from(final TranscriptionStatusDto dto) {
+        return new TranscriptionStatusResponse(
                 dto.getId(),
                 dto.getOcrStatus().name(),
                 dto.getOcrPercentDone(),
-                dto.getBrailleTranslationStatus().name(),
-                dto.getBrailleTranslationPercentDone()
+                dto.getTranscriptionStatus().name(),
+                dto.getTranscriptionPercentDone()
         );
     }
 }

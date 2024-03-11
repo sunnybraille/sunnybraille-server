@@ -19,13 +19,13 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 @Slf4j
 @Profile("!test")
 @Component
-public class ApiBrailleTranslationClient implements BrailleTranslationClient {
+public class ApiTranscriptionClient implements TranscriptionClient {
 
     private final String appURI;
     private final String keyName;
     private final RestTemplate restTemplate;
 
-    public ApiBrailleTranslationClient(
+    public ApiTranscriptionClient(
             @Value("${braille-translation.uri}") String appURI,
             @Value("${braille-translation.key-name}") String keyName,
             RestTemplate restTemplate
@@ -36,7 +36,7 @@ public class ApiBrailleTranslationClient implements BrailleTranslationClient {
     }
 
     @Override
-    public String translate(final File file) {
+    public String transcribe(final File file) {
         final HttpHeaders requestHeader = createRequestHeader();
         MultiValueMap<String, Object> requestBody = createRequestBody(file);
         final HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(requestBody, requestHeader);

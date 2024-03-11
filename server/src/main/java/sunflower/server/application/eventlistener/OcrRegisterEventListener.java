@@ -11,8 +11,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import sunflower.server.application.event.OcrRegisterEvent;
 import sunflower.server.application.event.OcrStatusEvent;
 import sunflower.server.client.OcrRegisterClient;
-import sunflower.server.entity.Translations;
-import sunflower.server.repository.TranslationsRepository;
+import sunflower.server.entity.Transcriptions;
+import sunflower.server.repository.TranscriptionsRepository;
 import sunflower.server.util.FileUtil;
 
 import java.io.File;
@@ -24,17 +24,17 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRES_NE
 @Component
 public class OcrRegisterEventListener {
 
-    private TranslationsRepository translationsRepository;
+    private TranscriptionsRepository transcriptionsRepository;
     private OcrRegisterClient ocrRegisterClient;
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
     public OcrRegisterEventListener(
-            final TranslationsRepository translationsRepository,
+            final TranscriptionsRepository transcriptionsRepository,
             final OcrRegisterClient ocrRegisterClient,
             final ApplicationEventPublisher eventPublisher
     ) {
-        this.translationsRepository = translationsRepository;
+        this.transcriptionsRepository = transcriptionsRepository;
         this.ocrRegisterClient = ocrRegisterClient;
         this.eventPublisher = eventPublisher;
     }
@@ -45,13 +45,13 @@ public class OcrRegisterEventListener {
     public void registerOcr(final OcrRegisterEvent event) {
         log.info("현재 스레드: {}", Thread.currentThread().getName());
 
-        final Long id = event.getTranslations().getId();
-        final Translations translations = translationsRepository.getById(id);
-        final File file = FileUtil.findFile(translations.getPdfPath());
+        final Long id = event.getTranscriptions().getId();
+        final Transcriptions transcriptions = transcriptionsRepository.getById(id);
+        final File file = FileUtil.findFile(transcriptions.getPdfPath());
 
-        translations.startOcr();
+        transcriptions.startOcr();
         final String pdfId = ocrRegisterClient.requestPdfId(file);
-        translations.registerPdfId(pdfId);
+        transcriptions.registerPdfId(pdfId);
 
         eventPublisher.publishEvent(new OcrStatusEvent(this, id));
     }

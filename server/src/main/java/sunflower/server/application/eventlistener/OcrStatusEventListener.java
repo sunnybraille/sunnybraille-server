@@ -14,8 +14,8 @@ import sunflower.server.application.event.OcrStatusEvent;
 import sunflower.server.client.OcrStatusClient;
 import sunflower.server.client.dto.OcrStatus;
 import sunflower.server.client.dto.OcrStatusDto;
-import sunflower.server.entity.Translations;
-import sunflower.server.repository.TranslationsRepository;
+import sunflower.server.entity.Transcriptions;
+import sunflower.server.repository.TranscriptionsRepository;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
@@ -24,17 +24,17 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRES_NE
 @Component
 public class OcrStatusEventListener {
 
-    private TranslationsRepository translationsRepository;
+    private TranscriptionsRepository transcriptionsRepository;
     private OcrStatusClient ocrStatusClient;
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
     public OcrStatusEventListener(
-            final TranslationsRepository translationsRepository,
+            final TranscriptionsRepository transcriptionsRepository,
             final OcrStatusClient ocrStatusClient,
             final ApplicationEventPublisher eventPublisher
     ) {
-        this.translationsRepository = translationsRepository;
+        this.transcriptionsRepository = transcriptionsRepository;
         this.ocrStatusClient = ocrStatusClient;
         this.eventPublisher = eventPublisher;
     }
@@ -46,11 +46,11 @@ public class OcrStatusEventListener {
         log.info("현재 스레드: {}", Thread.currentThread().getName());
 
         final Long id = event.getId();
-        final Translations translations = translationsRepository.getById(id);
+        final Transcriptions transcriptions = transcriptionsRepository.getById(id);
 
-        final String pdfId = translations.getOcrPdfId();
+        final String pdfId = transcriptions.getOcrPdfId();
         final OcrStatusDto status = ocrStatusClient.checkStatus(pdfId);
-        translations.changeOcrStatus(status);
+        transcriptions.changeOcrStatus(status);
 
         if (status.getStatus() != OcrStatus.COMPLETED) {
             retryCheckOcrStatus(id, pdfId);
