@@ -15,4 +15,14 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
         }
         return session.get();
     }
+
+    default Session getByMemberId(final Long memberId) {
+        final Optional<Session> session = findByMemberId(memberId);
+        if (session.isEmpty()) {
+            new AuthException();
+        }
+        return session.get();
+    }
+
+    Optional<Session> findByMemberId(Long memberId);
 }

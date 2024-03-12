@@ -26,6 +26,7 @@ public class Session {
     private Long memberId;
     private LocalDateTime createdAt;
     private LocalDateTime expiredAt;
+    private Boolean deleted = Boolean.FALSE;
 
     public Session(final Long memberId) {
         this.memberId = memberId;
@@ -42,6 +43,9 @@ public class Session {
     }
 
     public boolean isValid() {
+        if (this.deleted == Boolean.TRUE) {
+            return false;
+        }
         // TODO: 현재는 만료 시간만 체크중이지만, 이후에 IP 등 다양한 검증 로직 추가
         final LocalDateTime currentTime = LocalDateTime.now();
         return expiredAt.isAfter(currentTime);
@@ -50,5 +54,9 @@ public class Session {
     public void extendTime() {
         final LocalDateTime currentTime = LocalDateTime.now();
         this.expiredAt = extendTime(currentTime);
+    }
+
+    public void logout() {
+        this.deleted = Boolean.TRUE;
     }
 }
