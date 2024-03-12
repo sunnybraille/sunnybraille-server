@@ -35,4 +35,10 @@ public class SessionService {
         final Session session = sessionRepository.getById(sessionId);
         session.extendTime();
     }
+
+    @Transactional
+    public void logout(final Long memberId) {
+        final Session session = sessionRepository.getByMemberId(memberId);
+        session.logout();
+    }
 }

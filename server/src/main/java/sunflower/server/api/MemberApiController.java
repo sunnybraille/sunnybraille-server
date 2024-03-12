@@ -11,6 +11,7 @@ import sunflower.server.api.request.JoinRequest;
 import sunflower.server.api.request.LoginRequest;
 import sunflower.server.application.MemberService;
 import sunflower.server.application.SessionService;
+import sunflower.server.application.resolver.MemberAuth;
 
 @RequiredArgsConstructor
 @RestController
@@ -40,6 +41,14 @@ public class MemberApiController implements MemberApiControllerDocs {
 
         return ResponseEntity
                 .status(HttpStatus.OK.value())
+                .build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(MemberAuth member) {
+        sessionService.logout(member.getId());
+        return ResponseEntity
+                .noContent()
                 .build();
     }
 }
