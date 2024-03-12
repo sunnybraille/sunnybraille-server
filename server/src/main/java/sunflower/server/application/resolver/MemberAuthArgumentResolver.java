@@ -30,7 +30,7 @@ public class MemberAuthArgumentResolver implements HandlerMethodArgumentResolver
     @Override
     public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String encryptedSessionId = extractSessionId(request.getCookies());
+        String encryptedSessionId = findEncryptedSessionId(request);
 
         if (encryptedSessionId == null) {
             throw new AuthException();
@@ -44,6 +44,15 @@ public class MemberAuthArgumentResolver implements HandlerMethodArgumentResolver
         } else {
             throw new AuthException();
         }
+    }
+
+    private String findEncryptedSessionId(final HttpServletRequest request) {
+        final String sessionId = request.getHeader("SessionId");
+        if (sessionId != null) {
+            return sessionId;
+        }
+
+        return extractSessionId(request.getCookies());
     }
 
     private String extractSessionId(final Cookie[] cookies) {
