@@ -1,5 +1,6 @@
 package sunflower.server.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -18,6 +19,8 @@ public class Member {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
+
+    @Column(unique = true)
     private String loginId;
     private String encryptedPassword;
     private Boolean isBlind;
