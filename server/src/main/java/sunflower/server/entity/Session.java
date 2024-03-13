@@ -26,6 +26,7 @@ public class Session {
     private Long memberId;
     private LocalDateTime createdAt;
     private LocalDateTime expiredAt;
+    private Boolean isLoggedIn = Boolean.TRUE;
     private Boolean deleted = Boolean.FALSE;
 
     public Session(final Long memberId) {
@@ -43,7 +44,7 @@ public class Session {
     }
 
     public boolean isValid() {
-        if (this.deleted == Boolean.TRUE) {
+        if (!this.isLoggedIn) {
             return false;
         }
         // TODO: 현재는 만료 시간만 체크중이지만, 이후에 IP 등 다양한 검증 로직 추가
@@ -57,6 +58,6 @@ public class Session {
     }
 
     public void logout() {
-        this.deleted = Boolean.TRUE;
+        this.isLoggedIn = Boolean.FALSE;
     }
 }

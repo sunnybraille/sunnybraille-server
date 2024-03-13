@@ -38,7 +38,7 @@ public class SessionService {
 
     @Transactional
     public void logout(final Long memberId) {
-        final Session session = sessionRepository.getByMemberId(memberId);
+        final Session session = sessionRepository.getByMemberIdAndIsLoggedInTrue(memberId);
         session.logout();
     }
 }
