@@ -14,12 +14,12 @@ public class MemberTranscriptionsLogService {
 
     private final MemberTranscriptionsLogRepository memberTranscriptionsLogRepository;
 
-    public void count(final Long memberId) {
+    public int count(final Long memberId) {
         final Optional<MemberTranscriptionsLog> log = memberTranscriptionsLogRepository.findByMemberIdAndDate(memberId, LocalDate.now());
         if (log.isEmpty()) {
             final MemberTranscriptionsLog newLog = memberTranscriptionsLogRepository.save(MemberTranscriptionsLog.of(memberId));
-            newLog.count();
+            return newLog.count();
         }
-        log.get().count();
+        return log.get().count();
     }
 }

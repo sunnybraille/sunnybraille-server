@@ -10,6 +10,7 @@ import sunflower.server.application.dto.BrfFileDto;
 import sunflower.server.application.dto.TranscriptionStatusDto;
 import sunflower.server.application.event.OcrRegisterEvent;
 import sunflower.server.entity.Transcriptions;
+import sunflower.server.exception.TranscriptionException;
 import sunflower.server.repository.TranscriptionsRepository;
 import sunflower.server.util.FileUtil;
 
@@ -27,6 +28,11 @@ public class TranscriptionService {
 
     @Transactional
     public Long register(final Long memberId, final MultipartFile file) {
+        final int count = memberTranscriptionsLogService.count(memberId);
+        if (count > 10) {
+            throw new TranscriptionException("C");
+        }
+
         final String originalFileName = file.getOriginalFilename();
         final String fileName = FileUtil.createRandomFileName(file);
 
@@ -34,7 +40,6 @@ public class TranscriptionService {
         final Transcriptions transcriptions = transcriptionsRepository.save(Transcriptions.of(pdfPath, originalFileName));
         log.info("Saved pdf File in Server. File URI: {}", pdfPath);
 
-        memberTranscriptionsLogService.count(memberId);
         eventPublisher.publishEvent(new OcrRegisterEvent(this, transcriptions));
         log.info("pdf file 저장 이벤트를 발행했습니다!");
         log.info("현재 스레드: {}", Thread.currentThread().getName());

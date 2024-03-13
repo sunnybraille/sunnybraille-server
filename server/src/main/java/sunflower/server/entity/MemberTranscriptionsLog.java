@@ -29,7 +29,8 @@ public class MemberTranscriptionsLog {
         return new MemberTranscriptionsLog(null, memberId, 0, LocalDate.now());
     }
 
-    public void count() {
+    public Integer count() {
         this.transcriptionCount++;
+        return this.transcriptionCount;
     }
 }
