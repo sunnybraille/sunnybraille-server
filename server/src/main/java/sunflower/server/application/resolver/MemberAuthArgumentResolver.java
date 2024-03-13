@@ -47,10 +47,10 @@ public class MemberAuthArgumentResolver implements HandlerMethodArgumentResolver
     }
 
     private String findEncryptedSessionId(final HttpServletRequest request) {
-        final String sessionId = request.getHeader("SessionId");
-        if (sessionId != null) {
-            return sessionId;
-        }
+//        final String sessionId = request.getHeader("SessionId");
+//        if (sessionId != null) {
+//            return sessionId;
+//        }
 
         return extractSessionId(request.getCookies());
     }
