@@ -10,6 +10,7 @@ import sunflower.server.application.dto.BrfFileDto;
 import sunflower.server.application.dto.TranscriptionStatusDto;
 import sunflower.server.application.event.OcrRegisterEvent;
 import sunflower.server.entity.Transcriptions;
+import sunflower.server.exception.TranscriptionException;
 import sunflower.server.repository.TranscriptionsRepository;
 import sunflower.server.util.FileUtil;
 
@@ -22,10 +23,16 @@ import java.nio.file.Paths;
 public class TranscriptionService {
 
     private final TranscriptionsRepository transcriptionsRepository;
+    private final MemberTranscriptionsLogService memberTranscriptionsLogService;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public Long register(final MultipartFile file) {
+    public Long register(final Long memberId, final MultipartFile file) {
+        final int count = memberTranscriptionsLogService.count(memberId);
+        if (count > 10) {
+            throw new TranscriptionException("C");
+        }
+
         final String originalFileName = file.getOriginalFilename();
         final String fileName = FileUtil.createRandomFileName(file);
 

@@ -12,6 +12,7 @@ public enum ErrorCode {
     L("Latex 파일 처리에 문제가 발생했습니다."),
     T("점역 API 호출에서 문제가 발생했습니다."),
     B("BRF 파일 처리에 문제가 발생했습니다."),
+    C("일일 가능한 점역 횟수를 초과했습니다."),
     ;
 
     private final String message;

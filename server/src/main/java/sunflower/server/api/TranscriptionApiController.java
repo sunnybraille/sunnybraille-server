@@ -39,7 +39,7 @@ public class TranscriptionApiController implements TranscriptionApiControllerDoc
             throw new FileException(ErrorCode.P);
         }
 
-        final Long id = transcriptionService.register(file);
+        final Long id = transcriptionService.register(member.getId(), file);
 
         return ResponseEntity
                 .created(URI.create("/transcriptions/" + id))
