@@ -59,4 +59,10 @@ public class TranscriptionService {
         final String content = FileUtil.readFile(file);
         return BrfFileDto.of(transcriptions, content);
     }
+
+    @Transactional
+    public void updateFileName(final Long id, final String name) {
+        final Transcriptions transcriptions = transcriptionsRepository.getById(id);
+        transcriptions.changeName(name);
+    }
 }
