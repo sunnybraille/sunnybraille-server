@@ -24,6 +24,7 @@ public class Transcriptions {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    private String name;
     private String inputFileName;
     private String ocrPdfId;
 
@@ -42,6 +43,7 @@ public class Transcriptions {
         transcriptions.start();
         transcriptions.changePdfPath(pdfPath);
         transcriptions.changeInputFileName(inputFileName);
+        transcriptions.changeName(inputFileName);
         return transcriptions;
     }
 
@@ -65,6 +67,10 @@ public class Transcriptions {
 
     public void registerPdfId(final String ocrPdfId) {
         this.ocrPdfId = ocrPdfId;
+    }
+
+    public void changeName(final String name) {
+        this.name = name;
     }
 
     public void changeOcrStatus(final OcrStatusDto dto) {

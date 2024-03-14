@@ -5,10 +5,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import sunflower.server.api.request.TranscriptionNameUpdateRequest;
 import sunflower.server.api.response.BrfFileQueryResponse;
 import sunflower.server.api.response.PdfRegisterResponse;
 import sunflower.server.api.response.TranscriptionStatusResponse;
@@ -63,5 +65,15 @@ public class TranscriptionApiController implements TranscriptionApiControllerDoc
         final BrfFileDto brfFile = transcriptionService.findBrfFileById(id);
         final BrfFileQueryResponse response = BrfFileQueryResponse.from(id, brfFile.getOriginalFileName(), brfFile.getContent());
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/name")
+    public ResponseEntity<Void> updateFileName(
+            MemberAuth member,
+            @PathVariable("id") Long id,
+            @RequestBody TranscriptionNameUpdateRequest request
+    ) {
+        transcriptionService.updateFileName(member.getId(), request.getName());
+        return ResponseEntity.ok().build();
     }
 }
