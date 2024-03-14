@@ -8,8 +8,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
+import sunflower.server.api.request.TranscriptionNameUpdateRequest;
 import sunflower.server.api.response.BrfFileQueryResponse;
 import sunflower.server.api.response.PdfRegisterResponse;
 import sunflower.server.api.response.TranscriptionStatusResponse;
@@ -52,5 +54,13 @@ public interface TranscriptionApiControllerDocs {
     ResponseEntity<BrfFileQueryResponse> queryBrfFile(
             MemberAuth member,
             @Parameter(description = "Transcriptions id", required = true) @PathVariable("id") Long id
+    );
+
+    @Operation(summary = "점역 이름 변경 API", description = "점역된 결과에 대해 직접 이름을 설정합니다. (인증 정보는 쿠키를 통해서 받습니다.)")
+    @ApiResponse(responseCode = "200", description = "이름 변경이 완료되었습니다.")
+    ResponseEntity<Void> updateFileName(
+            MemberAuth member,
+            @PathVariable("id") Long id,
+            @RequestBody TranscriptionNameUpdateRequest request
     );
 }
