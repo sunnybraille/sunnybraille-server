@@ -36,8 +36,7 @@ public class MemberApiController implements MemberApiControllerDocs {
         final Long id = memberService.login(request.getLoginId(), request.getPassword());
         final String sessionId = sessionService.createSessionId(id);
 
-        response.setHeader("Set-Cookie", "sessionId=" + sessionId + "; HttpOnly; Max-Age=3600; Path=/; Secure; SameSite=None"); // 사용중이지 않음
-//        response.setHeader("SessionId", sessionId); // 임시 사용중
+        response.setHeader("Set-Cookie", "sessionId=" + sessionId + "; HttpOnly; Max-Age=3600; Path=/; Secure; SameSite=None");
 
         return ResponseEntity
                 .status(HttpStatus.OK.value())
