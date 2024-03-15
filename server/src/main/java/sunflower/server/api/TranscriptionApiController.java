@@ -63,7 +63,7 @@ public class TranscriptionApiController implements TranscriptionApiControllerDoc
             @PathVariable("id") Long id
     ) {
         final BrfFileDto brfFile = transcriptionService.findBrfFileById(id);
-        final BrfFileQueryResponse response = BrfFileQueryResponse.from(id, brfFile.getOriginalFileName(), brfFile.getContent());
+        final BrfFileQueryResponse response = BrfFileQueryResponse.from(id, brfFile);
         return ResponseEntity.ok(response);
     }
 

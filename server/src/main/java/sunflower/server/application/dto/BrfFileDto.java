@@ -9,10 +9,11 @@ import sunflower.server.entity.Transcriptions;
 public class BrfFileDto {
 
     private final Long id;
+    private final String name;
     private final String originalFileName;
     private final String content;
 
     public static BrfFileDto of(final Transcriptions transcriptions, final String content) {
-        return new BrfFileDto(transcriptions.getId(), transcriptions.getInputFileName(), content);
+        return new BrfFileDto(transcriptions.getId(), transcriptions.getName(), transcriptions.getInputFileName(), content);
     }
 }
