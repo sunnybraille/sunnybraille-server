@@ -1,4 +1,4 @@
-package sunflower.server.application;
+package sunflower.server.auth.application;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

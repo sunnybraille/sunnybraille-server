@@ -1,4 +1,4 @@
-package sunflower.server.api;
+package sunflower.server.auth.api;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
