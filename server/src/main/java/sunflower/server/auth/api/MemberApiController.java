@@ -1,4 +1,4 @@
-package sunflower.server.api;
+package sunflower.server.auth.api;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import sunflower.server.api.request.JoinRequest;
 import sunflower.server.api.request.LoginRequest;
-import sunflower.server.application.MemberService;
+import sunflower.server.auth.application.MemberService;
 import sunflower.server.application.SessionService;
 import sunflower.server.application.resolver.MemberAuth;
 
