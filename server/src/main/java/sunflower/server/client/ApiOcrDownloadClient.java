@@ -25,7 +25,7 @@ public class ApiOcrDownloadClient implements OcrDownloadClient {
             @Value("${ocr.download-uri}") String appURI,
             @Value("${ocr.app-id}") String appId,
             @Value("${ocr.app-key}") String appKey,
-            RestTemplate restTemplate
+            final RestTemplate restTemplate
     ) {
         this.appURI = appURI;
         this.appId = appId;
