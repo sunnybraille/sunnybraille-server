@@ -1,4 +1,6 @@
 spring:
   config:
+    activate:
+      on-profile: dev
     import:
       - security/application-test.yml
