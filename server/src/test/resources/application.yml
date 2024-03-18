@@ -7,3 +7,9 @@ client:
 
 encryption:
   secret-key: VNaqsewrTM84zdZB+52sXOg==
+
+oauth:
+  kakao:
+    redirect-uri: https://www.sunnybraille.com/login/kakao
+    rest-api-key: rest-api-key
+    auth-code-uri: auth-code-uri
