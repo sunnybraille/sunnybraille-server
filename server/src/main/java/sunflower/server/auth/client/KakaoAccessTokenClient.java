@@ -1,6 +1,5 @@
 package sunflower.server.auth.client;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -11,21 +10,19 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import sunflower.server.auth.client.response.KakaoOAuthResponse;
 
-import java.util.Map;
-
 @Slf4j
 @Component
-public class KakaoOAuthClient {
+public class KakaoAccessTokenClient {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final String GRANT_TYPE = "authorization_code";
     private final RestTemplate restTemplate;
 
-    public KakaoOAuthClient(final RestTemplate restTemplate) {
+    public KakaoAccessTokenClient(final RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public void login(final String authTokenURI, final String restApiKey, final String redirectURI, final String code) {
+    public KakaoOAuthResponse requestAccessToken(final String authTokenURI, final String restApiKey, final String redirectURI, final String code) {
         final String requestURI = authTokenURI;
         HttpHeaders requestHeader = createRequestHeader();
         final MultiValueMap<String, Object> requestBody = createRequestBody(restApiKey, redirectURI, code);
@@ -35,7 +32,13 @@ public class KakaoOAuthClient {
         log.info("Request Headers: {}", requestHeader);
         log.info("Request Parameters: {}", requestBody);
 
-        final KakaoOAuthResponse response = restTemplate.postForObject(requestURI, requestEntity, KakaoOAuthResponse.class);
+        return restTemplate.postForObject(requestURI, requestEntity, KakaoOAuthResponse.class);
+    }
+
+    private HttpHeaders createRequestHeader() {
+        HttpHeaders requestHeader = new HttpHeaders();
+        requestHeader.set(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
+        return requestHeader;
     }
 
     private MultiValueMap<String, Object> createRequestBody(final String restApiKey, final String redirectURI, final String code) {
@@ -47,19 +50,5 @@ public class KakaoOAuthClient {
         requestBody.add("code", code);
 
         return requestBody;
-    }
-
-    private String convertToJson(final Map<String, Object> body) {
-        try {
-            return objectMapper.writeValueAsString(body);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private HttpHeaders createRequestHeader() {
-        HttpHeaders requestHeader = new HttpHeaders();
-        requestHeader.set("Content-Type", "application/x-www-form-urlencoded");
-        return requestHeader;
     }
 }
