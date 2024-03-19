@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sunflower.server.auth.client.KakaoAccessTokenClient;
 import sunflower.server.auth.client.KakaoUserProfileClient;
-import sunflower.server.auth.client.response.KakaoOAuthResponse;
+import sunflower.server.auth.client.response.KakaoAccessTokenResponse;
+import sunflower.server.auth.client.response.KakaoUserProfileResponse;
 
 @Service
 public class KakaoMemberService {
@@ -40,10 +41,9 @@ public class KakaoMemberService {
     }
 
     public String login(final String code) {
-        final KakaoOAuthResponse response = kakaoAccessTokenClient.requestAccessToken(authTokenURI, restApiKey, redirectURI, code);
-        final String accessToken = response.getAccessToken();
-        kakaoUserProfileClient.requestUserProfile(userProfileURI, accessToken);
-
+        final KakaoAccessTokenResponse kakaoAccessTokenResponse = kakaoAccessTokenClient.requestAccessToken(authTokenURI, restApiKey, redirectURI, code);
+        final String accessToken = kakaoAccessTokenResponse.getAccessToken();
+        final KakaoUserProfileResponse kakaoUserProfileResponse = kakaoUserProfileClient.requestUserProfile(userProfileURI, accessToken);
         return null;
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import sunflower.server.auth.client.response.KakaoOAuthResponse;
+import sunflower.server.auth.client.response.KakaoAccessTokenResponse;
 
 @Slf4j
 @Component
@@ -22,7 +22,7 @@ public class KakaoAccessTokenClient {
         this.restTemplate = restTemplate;
     }
 
-    public KakaoOAuthResponse requestAccessToken(final String authTokenURI, final String restApiKey, final String redirectURI, final String code) {
+    public KakaoAccessTokenResponse requestAccessToken(final String authTokenURI, final String restApiKey, final String redirectURI, final String code) {
         final String requestURI = authTokenURI;
         HttpHeaders requestHeader = createRequestHeader();
         final MultiValueMap<String, Object> requestBody = createRequestBody(restApiKey, redirectURI, code);
@@ -32,7 +32,7 @@ public class KakaoAccessTokenClient {
         log.info("Request Headers: {}", requestHeader);
         log.info("Request Parameters: {}", requestBody);
 
-        return restTemplate.postForObject(requestURI, requestEntity, KakaoOAuthResponse.class);
+        return restTemplate.postForObject(requestURI, requestEntity, KakaoAccessTokenResponse.class);
     }
 
     private HttpHeaders createRequestHeader() {
