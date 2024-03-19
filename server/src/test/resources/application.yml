@@ -14,3 +14,4 @@ oauth:
     rest-api-key: rest-api-key
     auth-code-uri: auth-code-uri
     token-uri: token-uri
+    user-info-request-uri: user-info-request-uri₩
