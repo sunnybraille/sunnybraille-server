@@ -32,7 +32,7 @@ public class Member {
     private Long oauthId;
     private Boolean isBlind;
 
-    public Member(
+    private Member(
             final Long id,
             final String nickname,
             final String loginId,
@@ -58,7 +58,14 @@ public class Member {
     ) {
         this.nickname = nickname;
         this.loginId = loginId;
-        this.encryptedPassword = password;
+        this.encryptedPassword = encryptPassword(password);
+    }
+
+    private static String encryptPassword(final String password) {
+        if (password != null) {
+            return PasswordUtil.encrypt(password);
+        }
+        return null;
     }
 
     @Builder(builderMethodName = "oauth")
