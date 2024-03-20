@@ -6,6 +6,11 @@ import sunflower.server.auth.client.KakaoAccessTokenClient;
 import sunflower.server.auth.client.KakaoUserProfileClient;
 import sunflower.server.auth.client.response.KakaoAccessTokenResponse;
 import sunflower.server.auth.client.response.KakaoUserProfileResponse;
+import sunflower.server.entity.LoginType;
+import sunflower.server.entity.Member;
+import sunflower.server.repository.MemberRepository;
+
+import java.util.Optional;
 
 @Service
 public class KakaoMemberService {
@@ -17,6 +22,7 @@ public class KakaoMemberService {
     private final String userProfileURI;
     private final KakaoAccessTokenClient kakaoAccessTokenClient;
     private final KakaoUserProfileClient kakaoUserProfileClient;
+    private final MemberRepository memberRepository;
 
     public KakaoMemberService(
             @Value("${oauth.kakao.rest-api-key}") String restApiKey,
@@ -25,7 +31,8 @@ public class KakaoMemberService {
             @Value("${oauth.kakao.token-uri}") String authTokenURI,
             @Value("${oauth.kakao.user-info-request-uri}") String userProfileURI,
             final KakaoAccessTokenClient kakaoAccessTokenClient,
-            final KakaoUserProfileClient kakaoUserProfileClient
+            final KakaoUserProfileClient kakaoUserProfileClient,
+            final MemberRepository memberRepository
     ) {
         this.redirectURI = redirectURI;
         this.restApiKey = restApiKey;
@@ -34,16 +41,36 @@ public class KakaoMemberService {
         this.userProfileURI = userProfileURI;
         this.kakaoAccessTokenClient = kakaoAccessTokenClient;
         this.kakaoUserProfileClient = kakaoUserProfileClient;
+        this.memberRepository = memberRepository;
     }
 
     public String loginURI() {
         return String.format(authCodeURI, restApiKey, redirectURI);
     }
 
-    public String login(final String code) {
+    public Long login(final String code) {
         final KakaoAccessTokenResponse kakaoAccessTokenResponse = kakaoAccessTokenClient.requestAccessToken(authTokenURI, restApiKey, redirectURI, code);
         final String accessToken = kakaoAccessTokenResponse.getAccessToken();
         final KakaoUserProfileResponse kakaoUserProfileResponse = kakaoUserProfileClient.requestUserProfile(userProfileURI, accessToken);
-        return null;
+        final Long oauthId = kakaoUserProfileResponse.getOauthId();
+        final Member member = findOrCreateMember(kakaoUserProfileResponse, oauthId);
+        return member.getId();
+    }
+
+    private Member findOrCreateMember(final KakaoUserProfileResponse kakaoUserProfileResponse, final Long oauthId) {
+        final Optional<Member> findMember = memberRepository.findByLoginTypeAndOauthId(LoginType.KAKAO, oauthId);
+
+        if (findMember.isPresent()) {
+            return findMember.get();
+        }
+
+        return memberRepository.save(
+                Member
+                        .oauth()
+                        .loginType(LoginType.KAKAO)
+                        .nickname(kakaoUserProfileResponse.getNickname())
+                        .oauthId(kakaoUserProfileResponse.getOauthId())
+                        .build()
+        );
     }
 }

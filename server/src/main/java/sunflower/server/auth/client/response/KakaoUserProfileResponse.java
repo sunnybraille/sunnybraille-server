@@ -7,6 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KakaoUserProfileResponse {
 
-    private final long oauthId;
     private final String nickname;
+    private final Long oauthId;
 }

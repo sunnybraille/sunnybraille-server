@@ -48,7 +48,7 @@ public class KakaoUserProfileClient {
             final JsonNode responseJson = objectMapper.readTree(responseBody);
             final long id = responseJson.path("id").asLong();
             final String nickname = responseJson.path("properties").path("nickname").asText();
-            return new KakaoUserProfileResponse(id, nickname);
+            return new KakaoUserProfileResponse(nickname, id);
         } catch (Exception e) {
             log.error("Error parsing JSON response: {}", e.getMessage());
             throw new IllegalArgumentException(e);

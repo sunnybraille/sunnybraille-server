@@ -12,7 +12,11 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public Long join(final String loginId, final String password) {
-        final Member member = Member.of(loginId, password);
+        final Member member = Member
+                .basicLogin()
+                .loginId(loginId)
+                .password(password)
+                .build();
         return memberRepository.save(member).getId();
     }
 

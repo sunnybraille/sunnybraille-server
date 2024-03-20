@@ -1,5 +1,6 @@
 package sunflower.server.auth.api;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,14 @@ public class KakaoMemberApiController {
     }
 
     @GetMapping("/login/kakao/session")
-    public ResponseEntity<Void> authorize(@RequestParam("code") String code) {
-        kakaoMemberService.login(code);
-        return null;
+    public ResponseEntity<Void> authorize(@RequestParam("code") final String code, final HttpServletResponse response) {
+        final Long memberId = kakaoMemberService.login(code);
+        final String sessionId = sessionService.createSessionId(memberId);
+
+        response.setHeader("Set-Cookie", "sessionId=" + sessionId + "; HttpOnly; Max-Age=3600; Path=/; Secure; SameSite=None");
+
+        return ResponseEntity
+                .status(HttpStatus.OK.value())
+                .build();
     }
 }

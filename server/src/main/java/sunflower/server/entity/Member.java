@@ -2,12 +2,15 @@ package sunflower.server.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sunflower.server.util.PasswordUtil;
 
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Getter
@@ -18,23 +21,55 @@ public class Member {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    private String name;
+    private String nickname;
 
     @Column(unique = true)
     private String loginId;
     private String encryptedPassword;
+
+    @Enumerated(STRING)
+    private LoginType loginType;
+    private Long oauthId;
     private Boolean isBlind;
 
-    public Member(final Long id, final String name, final String loginId, final String encryptedPassword, final Boolean isBlind) {
+    public Member(
+            final Long id,
+            final String nickname,
+            final String loginId,
+            final String encryptedPassword,
+            final LoginType loginType,
+            final Long oauthId,
+            final Boolean isBlind
+    ) {
         this.id = id;
-        this.name = name;
+        this.nickname = nickname;
         this.loginId = loginId;
         this.encryptedPassword = encryptedPassword;
+        this.loginType = loginType;
+        this.oauthId = oauthId;
         this.isBlind = isBlind;
     }
 
-    public static Member of(final String loginId, final String password) {
-        return new Member(null, null, loginId, PasswordUtil.encrypt(password), null);
+    @Builder(builderMethodName = "basicLogin")
+    public Member(
+            final String nickname,
+            final String loginId,
+            final String password
+    ) {
+        this.nickname = nickname;
+        this.loginId = loginId;
+        this.encryptedPassword = password;
+    }
+
+    @Builder(builderMethodName = "oauth")
+    public Member(
+            final String nickname,
+            final LoginType loginType,
+            final Long oauthId
+    ) {
+        this.nickname = nickname;
+        this.loginType = loginType;
+        this.oauthId = oauthId;
     }
 
     public void checkPassword(final String password) {
@@ -42,16 +77,5 @@ public class Member {
         if (!this.encryptedPassword.equals(encryptedPassword)) {
             throw new IllegalAccessError("아이디 또는 비밀번호가 잘못되었습니다.");
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Member{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", loginId='" + loginId + '\'' +
-                ", encryptedPassword='" + encryptedPassword + '\'' +
-                ", isBlind=" + isBlind +
-                '}';
     }
 }
