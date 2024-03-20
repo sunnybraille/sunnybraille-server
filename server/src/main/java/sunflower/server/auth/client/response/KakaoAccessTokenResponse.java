@@ -8,7 +8,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @NoArgsConstructor
-public class KakaoOAuthResponse {
+public class KakaoAccessTokenResponse {
 
     @JsonProperty("access_token")
     private String accessToken;
