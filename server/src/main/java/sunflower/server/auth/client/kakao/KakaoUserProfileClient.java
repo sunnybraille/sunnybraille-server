@@ -1,4 +1,4 @@
-package sunflower.server.auth.client;
+package sunflower.server.auth.client.kakao;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +42,6 @@ public class KakaoUserProfileClient {
         final ResponseEntity<String> response = restTemplate.exchange(requestURI, HttpMethod.GET, requestEntity, String.class);
 
         final String responseBody = response.getBody();
-        System.out.println("responseBody = " + responseBody);
 
         try {
             final JsonNode responseJson = objectMapper.readTree(responseBody);
