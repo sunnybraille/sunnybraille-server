@@ -2,8 +2,8 @@ package sunflower.server.auth.application;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import sunflower.server.auth.client.KakaoAccessTokenClient;
-import sunflower.server.auth.client.KakaoUserProfileClient;
+import sunflower.server.auth.client.kakao.KakaoAccessTokenClient;
+import sunflower.server.auth.client.kakao.KakaoUserProfileClient;
 import sunflower.server.auth.client.response.KakaoAccessTokenResponse;
 import sunflower.server.auth.client.response.KakaoUserProfileResponse;
 import sunflower.server.entity.LoginType;

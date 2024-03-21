@@ -1,6 +1,5 @@
-package sunflower.server.auth.client;
+package sunflower.server.auth.client.kakao;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +13,6 @@ import sunflower.server.auth.client.response.KakaoAccessTokenResponse;
 @Component
 public class KakaoAccessTokenClient {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
     private static final String GRANT_TYPE = "authorization_code";
     private final RestTemplate restTemplate;
 
