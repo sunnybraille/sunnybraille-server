@@ -18,7 +18,7 @@ public class KakaoMemberApiController {
     private final SessionService sessionService;
 
     @GetMapping("/login/kakao")
-    public ResponseEntity<Void> login() {
+    public ResponseEntity<Void> loginRedirectURI() {
         final String uri = kakaoMemberService.loginURI();
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header("Location", uri)
