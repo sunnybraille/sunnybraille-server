@@ -14,4 +14,11 @@ oauth:
     rest-api-key: rest-api-key
     auth-code-uri: auth-code-uri
     token-uri: token-uri
-    user-info-request-uri: user-info-request-uri₩
+    user-info-request-uri: user-info-request-uri
+  google:
+    redirect-uri: https://www.sunnybraille.com/login/google
+    login-uri: login-uri
+    scope: scope
+    client-id: client-id
+    client-secret: client-secret
+
