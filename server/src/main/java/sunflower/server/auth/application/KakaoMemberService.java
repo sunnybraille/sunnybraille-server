@@ -13,7 +13,7 @@ import sunflower.server.repository.MemberRepository;
 import java.util.Optional;
 
 @Service
-public class KakaoMemberService {
+public class KakaoMemberService implements MemberOAuthService {
 
     private final String redirectURI;
     private final String restApiKey;
