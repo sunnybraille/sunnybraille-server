@@ -1,9 +1,9 @@
-## 주요 변경사항
+## Major Changes
 
 - 
 
-## 관련 이슈
+## Related Issues
 
 closes #
 
-#### ✔️ Squash & Merge 방식으로 병합해 주세요!
+#### ✔️ please merge in Squash & Merge!
